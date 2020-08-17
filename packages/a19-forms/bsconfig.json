@@ -11,7 +11,7 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
-
+    "a19-core"
   ],
   "warnings": {
     "error" : "+101"
