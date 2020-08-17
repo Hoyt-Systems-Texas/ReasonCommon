@@ -13,5 +13,8 @@
   "license": "MIT",
   "devDependencies": {
     "bs-platform": "^8.0.3"
-  }
+  },
+  "workspaceDependencies": [
+    "a19-core"
+  ]
 }
