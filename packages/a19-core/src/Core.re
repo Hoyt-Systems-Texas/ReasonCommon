@@ -1,1 +1,0 @@
-type email = string;
