@@ -290,9 +290,12 @@ let makeFloatValidation = (~name, ~required, ~initialValue, ~minValue, ~maxValue
     validateFloat(valid, valid.baseValidation.value)
 }
 
-let hasErrors = (validation: array(validation)) => {
-    Belt.Array.length(Belt.Array.keep(validation, v => Belt.List.length(v.errors) > 0)) > 0
+let isValid = (validation: array(validation)) => {
+    () => {
+        Belt.Array.length(Belt.Array.keep(validation, v => Belt.List.length(v.errors) > 0)) == 0
+    }
 }
+
 
 type phoneNumberValidation = {
     baseValidation,
