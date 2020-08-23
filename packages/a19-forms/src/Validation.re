@@ -66,7 +66,7 @@ let optionString_to_string = (value: option(string)) => {
     }
 }
 
-let newStringValidation = (~name, ~initialValue, ~required, ~minLength, ~maxLength): stringValidation => {
+let makeStringValidation = (~name, ~initialValue, ~required, ~minLength, ~maxLength): stringValidation => {
     let valid = {
         baseValidation: {
             validation: {
