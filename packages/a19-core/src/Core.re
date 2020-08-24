@@ -22,6 +22,8 @@ module Decode = {
             field("accessDenied", _ => AccessDenied),
         ]);
     }
+
+    let decodeEmptyResult = json => decodeResultMonad(json, (_) => ());
 }
 
 let emptyGuid = "00000000-0000-0000-0000-000000000000";
