@@ -10,15 +10,15 @@ type timeType =
     ;
 
 type state = {
-    timeString: string,
+    timeString: A19Forms.Validation.timeValidation,
     timeType: timeType,
     pos: option(int),
 };
 
 [@react.component]
-let make = () => {
+let make = (~onChange: (option(Js.Date.t)) => unit, ~name: string) => {
     let (state, setState) = React.useState(_ => {
-        timeString: "",
+        timeString: A19Forms.Validation.makeTimeValidation(~name=name, ~initialValue=None),
         timeType: Undetermined,
         pos: None,
     });
@@ -27,7 +27,6 @@ let make = () => {
         let target: HtmlInputElement.t = ReactEvent.Synthetic.target(e)##valueOf();
         let key = ReactEvent.Synthetic.nativeEvent(e)##code;
         let pos = HtmlInputElement.selectionStart(target);
-        Js.Console.log(key);
         switch (key) {
             | "Digit1" | "Digit2" | "Digit3" | "Digit4" | "Digit5" 
             | "Digit6" | "Digit7" | "Digit8" | "Digit9" | "Digit0"
@@ -73,9 +72,7 @@ let make = () => {
                 | 2 => {
                     setState(state => {
                         ...state,
-                        timeType: TwoDigitHour,
-                        pos: Some(pos)
-                    })
+                        timeType: TwoDigitHour, pos: Some(pos) })
                 }
                 | _ => ReactEvent.Synthetic.preventDefault(e)
             }
@@ -87,8 +84,7 @@ let make = () => {
                 })
                 | _ => ReactEvent.Synthetic.preventDefault(e)
             }
-            | "KeyA" | "KeyP" => switch(pos, state.timeType) {
-                | (5, OneDigitHour)
+            | "KeyA" | "KeyP" => switch(pos, state.timeType) { | (5, OneDigitHour)
                 | (6, TwoDigitHour) => setState(state => {
                         ...state,
                         pos: Some(pos)
@@ -140,39 +136,37 @@ let make = () => {
             | _ => ()
         }
     };
-    let onChange = (value) => {
+    let onInputChange = (value) => {
         Js.Console.log(state.pos);
         Js.Console.log(String.length(value));
-        switch (state.pos, String.length(value), state.timeType) {
+        let time = switch (state.pos, String.length(value), state.timeType) {
             | (Some(0), 1, OneDigitHour)
-            | (Some(1), 2, TwoDigitHour) => setState(state => {
-                ...state,
-                timeString: value ++ ":"
-            })
+            | (Some(1), 2, TwoDigitHour) =>  
+                value ++ ":"
             | (Some(3), 4, OneDigitHour)
-            | (Some(4), 5, TwoDigitHour) => setState(state => {
-                ...state,
-                timeString: value ++ " "
-            })
+            | (Some(4), 5, TwoDigitHour) =>  
+                value ++ " "
             | (Some(5), 6, OneDigitHour)
-            | (Some(6), 7, TwoDigitHour) => setState(state => {
-                ...state,
-                timeString: value ++ "M"
-            })
+            | (Some(6), 7, TwoDigitHour) => 
+                value ++ "M"
             | _ => {
-
-                setState(state => {
-                    ...state,
-                    timeString: value
-                })
+                value
             }
-        }
+        };
+        setState(state => {
+            ...state,
+            timeString: A19Forms.Validation.validationTime(state.timeString, time),
+        })
     };
+    React.useEffect1(() => {
+        onChange(state.timeString.clean);
+        None;
+    }, [|state|]);
     <>
         <input type_="text"
-               value={state.timeString}
+               value={state.timeString.value}
                onKeyDown={e => onKeyDown(e)}
-               onChange={e => onChange(ReactEvent.Synthetic.target(e)##value)}
+               onChange={e => onInputChange(ReactEvent.Synthetic.target(e)##value)}
                onKeyPress={e => onKeyPress(e)} />
     </>
 }

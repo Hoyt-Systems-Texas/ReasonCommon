@@ -18,7 +18,9 @@
   "namespace": true,
   "bs-dependencies": [
     "bs-webapi",
-    "reason-react"
+    "reason-react",
+    "a19-core",
+    "a19-forms"
   ],
   "refmt": 3
 }

@@ -560,3 +560,48 @@ let validationEmail = (validation, value) => {
         clean
     }
 }
+
+type timeValidation = {
+    validation,
+    clean: option(Js.Date.t),
+    value: string,
+    name: string,
+}
+
+let makeTimeValidation = (~name, ~initialValue) => {
+    let date = switch (initialValue) {
+        | Some(date) => Js.Date.toLocaleTimeString(date)
+        | None => ""
+    };
+    {
+        name,
+        clean: initialValue,
+        value: date,
+        validation: {
+            dirty: false,
+            errors: []
+        }
+    }
+}
+
+let validationTime = (validation, value) => {
+    let clean = A19Core.Core.parseTimeString(value);
+    let errors = switch (clean) {
+        | Some(_) => {
+            []
+        }
+        | None => {
+            ["Invalid time: " ++ value]
+        }
+    };
+    {
+        ...validation,
+        validation: {
+            dirty: true,
+            errors: errors,
+        },
+        value,
+        clean
+    }
+}
+

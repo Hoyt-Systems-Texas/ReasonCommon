@@ -27,3 +27,9 @@ module Decode = {
 }
 
 let emptyGuid = "00000000-0000-0000-0000-000000000000";
+
+let parseTimeString = (timeString) => {
+    try (Some((Js.Date.fromString("1970-1-1 " ++ timeString)))) {
+    | _ => None
+    };
+}
