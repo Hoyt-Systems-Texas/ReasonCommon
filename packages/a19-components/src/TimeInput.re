@@ -31,6 +31,8 @@ let make = () => {
         switch (key) {
             | "Digit1" | "Digit2" | "Digit3" | "Digit4" | "Digit5" 
             | "Digit6" | "Digit7" | "Digit8" | "Digit9" | "Digit0"
+            | "KP_1" | "KP_2" | "KP_3" | "KP_4" | "KP_5" 
+            | "KP_6" | "KP_7" | "KP_8" | "KP_9" | "KP_0"
              =>  {
                 switch (pos) {
                     | 0 | 1 | 2 | 3 | 4 => {
@@ -54,7 +56,7 @@ let make = () => {
                                     ...state,
                                     pos: Some(pos)
                             })
-                            | _ => ()
+                            | _ => ReactEvent.Synthetic.preventDefault(e)
                         }
                     }
                     | _ => ReactEvent.Synthetic.preventDefault(e)
@@ -83,7 +85,7 @@ let make = () => {
                     ...state,
                     pos: Some(pos)
                 })
-                | _ => ()
+                | _ => ReactEvent.Synthetic.preventDefault(e)
             }
             | "KeyA" | "KeyP" => switch(pos, state.timeType) {
                 | (5, OneDigitHour)
@@ -115,13 +117,26 @@ let make = () => {
         }
     };
     let onKeyDown = (e) => {
+        open Webapi.Dom;
         let key = ReactEvent.Synthetic.nativeEvent(e)##code;
-        Js.Console.log(key);
+        let target: HtmlInputElement.t = ReactEvent.Synthetic.target(e)##valueOf();
+        let pos = HtmlInputElement.selectionStart(target);
+        Js.Console.log2(pos, key);
         switch (key) {
-            | "Backspace" | "Delete" => setState(state => {
-                ...state,
-                pos: None
-            });
+            | "Backspace" | "Delete" => {
+                switch (pos, state.timeType) {
+                    | (3, TwoDigitHour)
+                    | (2, OneDigitHour) => setState(state => {
+                        ...state,
+                        pos: None,
+                        timeType: Undetermined
+                    })
+                    | _ => setState(state => {
+                        ...state,
+                        pos: None,
+                    })
+                }
+            };
             | _ => ()
         }
     };
