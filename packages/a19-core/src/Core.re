@@ -28,8 +28,15 @@ module Decode = {
 
 let emptyGuid = "00000000-0000-0000-0000-000000000000";
 
-let parseTimeString = (timeString) => {
-    try (Some((MomentRe.momentDefaultFormat("1970-1-1 " ++ timeString)))) {
-    | _ => None
-    };
+let parseTimeString = timeString => {
+    let date = MomentRe.momentDefaultFormat("1970-1-1 " ++ timeString);
+    if (MomentRe.Moment.isValid(date)) {
+        Some(date)
+    } else {
+        None
+    }
+}
+
+let getTotalMinutes = date => {
+    MomentRe.Moment.toUnix(date) / 60
 }

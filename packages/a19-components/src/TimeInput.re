@@ -165,9 +165,11 @@ let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string) => {
     }, [|state|]);
     <>
         <input type_="text"
+               placeholder="HH:MM AM|PM"
                value={state.timeString.value}
                onKeyDown={e => onKeyDown(e)}
                onChange={e => onInputChange(ReactEvent.Synthetic.target(e)##value)}
                onKeyPress={e => onKeyPress(e)} />
+        <ErrorList errors=state.timeString.validation.errors />
     </>
 }
