@@ -3,10 +3,6 @@ open A19Core.Model.Location;
 
 let geocodingUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 
-type geoCodeOk = {
-    formattedAddress: string,
-};
-
 type viewPort = {
     northeast: geoCode,
     southwest: geoCode,
@@ -22,8 +18,13 @@ type okResult = {
     viewPort: viewPort,
 }
 
+type matchingAddress = {
+    formattedAddress: string,
+    geometry: geometry,
+};
+
 type geoCodingResult =
-    | Ok
+    | Ok(array(matchingAddress))
     | ZeroResults
     | OveryDailyLimit
     | OveryQueryLimit
@@ -59,10 +60,22 @@ module Decode {
         })
     };
 
+    let decodeMatchingAddress = (json) => {
+        Json.Decode.(
+        {
+            formattedAddress: json |> field("formatted_address", string),
+            geometry: json |> field("geometry", decodeGeometry),
+        })
+    }
+
     let decodeGeoCodingResult = (json) => {
         let status = json |> Json.Decode.field("status", Json.Decode.string);
         switch (status) {
-            | "OK" => Ok
+            | "OK" => {
+                Json.Decode.(
+                    Ok(json |> field("results", array(decodeMatchingAddress)))
+                )
+            }
             | "ZERO_RESULT" => ZeroResults
             | "OVER_DAILY_LIMIT" => OveryDailyLimit
             | "OVER_QUERY_LIMIT" => OveryQueryLimit
@@ -98,11 +111,7 @@ let getGeoCoding = (apiKey, address) => {
     Fetch.fetch(url)
         |> then_(Fetch.Response.json)
         |> then_(json => {
-            resolve(A19Core.Core.Success(
-                {
-                    lat: 0.0,
-                    lng: 0.0
-                }))
+            resolve(A19Core.Core.Success(Decode.decodeGeoCodingResult(json)))
         })
         |> catch(error => {
             Js.Console.log(error);

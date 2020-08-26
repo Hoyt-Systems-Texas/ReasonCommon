@@ -13,9 +13,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "^8.2.0"
+    "bs-platform": "^8.2.0",
+    "whatwg-fetch": "^3.4.0"
   },
   "workspaceDependencies": [
     "a19-core"
-  ]
+  ],
+  "jest": {
+    "setupFiles": ["./setup_jest.js"]
+  } 
 }
