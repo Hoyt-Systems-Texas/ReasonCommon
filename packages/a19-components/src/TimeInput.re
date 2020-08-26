@@ -19,7 +19,7 @@ type inputState = {
 };
 
 [@react.component]
-let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string) => {
+let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string, ~time=(None: option(MomentRe.Moment.t))) => {
     let (state, setState) = React.useState(_ => {
         timeString: A19Forms.Validation.makeTimeValidation(~name=name, ~initialValue=None),
     });

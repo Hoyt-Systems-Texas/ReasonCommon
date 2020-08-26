@@ -21,4 +21,10 @@ module Address {
     };
 }
 
+module Location {
+    type geoCode = {
+        lat: float,
+        lng: float,
+    }
+}
 

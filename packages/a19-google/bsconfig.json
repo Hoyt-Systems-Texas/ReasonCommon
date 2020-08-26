@@ -11,7 +11,10 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
-    "a19-core"
+    "a19-core",
+    "@glennsl/bs-jest",
+    "@glennsl/bs-json",
+    "bs-fetch"
   ],
   "warnings": {
     "error" : "+101"
