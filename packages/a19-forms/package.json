@@ -16,5 +16,7 @@
   },
   "workspaceDependencies": [
     "a19-core"
-  ]
+  ],
+  "dependencies": {
+  }
 }

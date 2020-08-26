@@ -563,14 +563,16 @@ let validationEmail = (validation, value) => {
 
 type timeValidation = {
     validation,
-    clean: option(Js.Date.t),
+    clean: option(MomentRe.Moment.t),
     value: string,
     name: string,
 }
 
 let makeTimeValidation = (~name, ~initialValue) => {
     let date = switch (initialValue) {
-        | Some(date) => Js.Date.toLocaleTimeString(date)
+        | Some(date) => date
+            -> MomentRe.Moment.toDate
+            -> Js.Date.toLocaleTimeString
         | None => ""
     };
     {

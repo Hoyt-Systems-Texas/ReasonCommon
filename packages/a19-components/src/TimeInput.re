@@ -11,14 +11,19 @@ type timeType =
 
 type state = {
     timeString: A19Forms.Validation.timeValidation,
+};
+
+type inputState = {
     timeType: timeType,
-    pos: option(int),
+    pos: option(int)
 };
 
 [@react.component]
-let make = (~onChange: (option(Js.Date.t)) => unit, ~name: string) => {
+let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string) => {
     let (state, setState) = React.useState(_ => {
         timeString: A19Forms.Validation.makeTimeValidation(~name=name, ~initialValue=None),
+    });
+    let (inputState, setInputState) = React.useState(_ => {
         timeType: Undetermined,
         pos: None,
     });
@@ -35,23 +40,21 @@ let make = (~onChange: (option(Js.Date.t)) => unit, ~name: string) => {
              =>  {
                 switch (pos) {
                     | 0 | 1 | 2 | 3 | 4 => {
-                        switch (pos, state.timeType) {
+                        switch (pos, inputState.timeType) {
                             | (0, _) => {
-                                setState(state => {
-                                    ...state,
+                                setInputState(_ => {
                                     pos: Some(pos),
                                     timeType: Undetermined
-                                })
+                                });
                             }
-                            | (1, Undetermined) => setState(state => {
-                                ...state,
+                            | (1, Undetermined) => setInputState(_ => {
                                 pos: Some(pos),
                                 timeType: TwoDigitHour,
-                            })
+                            });
                             | (2, OneDigitHour)
                             | (3, OneDigitHour)
                             | (3, TwoDigitHour)
-                            | (4, TwoDigitHour) => setState(state => {
+                            | (4, TwoDigitHour) => setInputState(state => {
                                     ...state,
                                     pos: Some(pos)
                             })
@@ -63,29 +66,29 @@ let make = (~onChange: (option(Js.Date.t)) => unit, ~name: string) => {
             }
             | "Semicolon" => switch (pos) {
                 | 1 => {
-                    setState(state => {
-                        ...state,
+                    setInputState(_ => {
                         timeType: OneDigitHour,
                         pos: Some(pos)
                     })
                 }
                 | 2 => {
-                    setState(state => {
-                        ...state,
-                        timeType: TwoDigitHour, pos: Some(pos) })
+                    setInputState(_ => {
+                        timeType: TwoDigitHour,
+                        pos: Some(pos) })
                 }
                 | _ => ReactEvent.Synthetic.preventDefault(e)
             }
-            | "Space" => switch(pos, state.timeType) {
+            | "Space" => switch(pos, inputState.timeType) {
                 | (4, OneDigitHour) 
-                | (5, TwoDigitHour) => setState(state => {
+                | (5, TwoDigitHour) => setInputState(state => {
                     ...state,
                     pos: Some(pos)
                 })
                 | _ => ReactEvent.Synthetic.preventDefault(e)
             }
-            | "KeyA" | "KeyP" => switch(pos, state.timeType) { | (5, OneDigitHour)
-                | (6, TwoDigitHour) => setState(state => {
+            | "KeyA" | "KeyP" => switch(pos, inputState.timeType) { 
+                | (5, OneDigitHour)
+                | (6, TwoDigitHour) => setInputState(state => {
                         ...state,
                         pos: Some(pos)
                     })
@@ -93,9 +96,9 @@ let make = (~onChange: (option(Js.Date.t)) => unit, ~name: string) => {
                    ReactEvent.Synthetic.preventDefault(e); 
                 }
             } 
-            | "KeyM" => switch(pos, state.timeType) {
+            | "KeyM" => switch(pos, inputState.timeType) {
                 | (6, OneDigitHour)
-                | (7, TwoDigitHour) => setState(state => {
+                | (7, TwoDigitHour) => setInputState(state => {
                         ...state,
                         pos: Some(pos)
                     })
@@ -104,13 +107,14 @@ let make = (~onChange: (option(Js.Date.t)) => unit, ~name: string) => {
                 }
             } 
             | _ => {
-                setState(state => {
+                ReactEvent.Synthetic.preventDefault(e)
+                setInputState(state => {
                     ...state,
                     pos: None
                 });
-                ReactEvent.Synthetic.preventDefault(e)
             }
-        }
+        };
+        Js.Console.log(ReactEvent.Synthetic.isDefaultPrevented(e));
     };
     let onKeyDown = (e) => {
         open Webapi.Dom;
@@ -120,26 +124,24 @@ let make = (~onChange: (option(Js.Date.t)) => unit, ~name: string) => {
         Js.Console.log2(pos, key);
         switch (key) {
             | "Backspace" | "Delete" => {
-                switch (pos, state.timeType) {
+                switch (pos, inputState.timeType) {
                     | (3, TwoDigitHour)
-                    | (2, OneDigitHour) => setState(state => {
-                        ...state,
+                    | (2, OneDigitHour) => setInputState(_ => {
                         pos: None,
                         timeType: Undetermined
                     })
-                    | _ => setState(state => {
+                    | _ => setInputState(state => {
                         ...state,
                         pos: None,
                     })
                 }
             };
             | _ => ()
-        }
+        };
     };
     let onInputChange = (value) => {
-        Js.Console.log(state.pos);
-        Js.Console.log(String.length(value));
-        let time = switch (state.pos, String.length(value), state.timeType) {
+        Js.Console.log("Onchange called.");
+        let time = switch (inputState.pos, String.length(value), inputState.timeType) {
             | (Some(0), 1, OneDigitHour)
             | (Some(1), 2, TwoDigitHour) =>  
                 value ++ ":"
@@ -154,9 +156,8 @@ let make = (~onChange: (option(Js.Date.t)) => unit, ~name: string) => {
             }
         };
         setState(state => {
-            ...state,
             timeString: A19Forms.Validation.validationTime(state.timeString, time),
-        })
+        });
     };
     React.useEffect1(() => {
         onChange(state.timeString.clean);

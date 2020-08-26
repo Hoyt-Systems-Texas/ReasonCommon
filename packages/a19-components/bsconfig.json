@@ -20,7 +20,8 @@
     "bs-webapi",
     "reason-react",
     "a19-core",
-    "a19-forms"
+    "a19-forms",
+    "bs-moment"
   ],
   "refmt": 3
 }

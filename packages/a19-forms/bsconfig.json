@@ -11,7 +11,8 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
-    "a19-core"
+    "a19-core",
+    "bs-moment"
   ],
   "warnings": {
     "error" : "+101"
