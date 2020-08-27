@@ -47,3 +47,9 @@ type asyncLoadState('a) =
     | Loaded('a)
     | LoadFailed
     ;
+
+let notADigit = [%re "/[^0-9]/g"]
+
+let removeNonDigits = (value) => {
+    Js.String.replaceByRe(notADigit, "", value);
+}
