@@ -40,3 +40,10 @@ let parseTimeString = timeString => {
 let getTotalMinutes = date => {
     MomentRe.Moment.toUnix(date) / 60
 }
+
+type asyncLoadState('a) =
+    | Pending
+    | Loading
+    | Loaded('a)
+    | LoadFailed
+    ;
