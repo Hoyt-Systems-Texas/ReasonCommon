@@ -4,6 +4,21 @@ module State {
         name: string,
         abbreviation: string
     };
+
+    type stateNameLookup = Belt.HashMap.Int.t(state);
+
+    let toStateNameLookup = (states) => {
+        Belt.Array.reduce(states, Belt.HashMap.String.make(~hintSize=100), (map, state) => {
+            Belt.HashMap.String.set(map, Js.String.toLocaleLowerCase(state.name), state);
+            Belt.HashMap.String.set(map, Js.String.toLocaleLowerCase(state.abbreviation), state);
+            map
+        })
+    };
+
+    let getState = (lookup, name) => {
+        Belt.HashMap.String.get(lookup, Js.String.toLocaleLowerCase(name))
+    };
+
 }
 
 module Address {
