@@ -23,7 +23,6 @@ module TestTypeMatchInfo = {
     type collection = list(testType);
     type record = testType;
     type unknownRecord = testType;
-    let reduce = Belt.List.reduce;
     let asList = a => a;
 }
 

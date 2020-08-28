@@ -17,12 +17,6 @@ module type BasicMatchInfo = {
     type unknownRecord;
 
     /**
-     * Need to build the data structure.
-     */
-
-    let reduce: collection => 'a => (('a, record) => 'a) => 'a;
-    
-    /**
      * Converts the collection to a list.
      */
     let asList: collection => list(record);
