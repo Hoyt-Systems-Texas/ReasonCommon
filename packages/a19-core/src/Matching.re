@@ -21,6 +21,7 @@ module type BasicMatchInfo = {
      */
 
     let reduce: collection => 'a => (('a, record) => 'a) => 'a;
+    let asList: collection => list('a);
 };
 module MakeBasicBatch = (Item: BasicMatchInfo) => {
 
@@ -28,8 +29,8 @@ module MakeBasicBatch = (Item: BasicMatchInfo) => {
      * The different type of matchin ghte system surppots.
      */
     type matchingBuilder = 
-        | HashStringMatch(Item.record => string, Item.unknownRecord => option(string))
-        | WordMatch(Item.record => string, Item.unknownRecord => option(string))
+        | HashStringMatch(Item.record => option(string), Item.unknownRecord => option(string))
+        | WordMatch(Item.record => option(string), Item.unknownRecord => option(string))
         ;
 
     type matchingBuilderRecord = list(matchingBuilder);
@@ -39,39 +40,93 @@ module MakeBasicBatch = (Item: BasicMatchInfo) => {
     type matchTryEntry =
         | Hash(Belt.HashMap.String.t(matchTryEntry), Item.unknownRecord => option(string))
         | Word(list((list(string), matchTryEntry)), Item.unknownRecord => option(string))
-        | Found(Item.record)
+        | Found(list(Item.record))
         ;
 
-    type matchTries = list(matchTryEntry);
-
-    type matchTryOneOf = list(matchTries);
+    type matchTryOneOf = list(matchTryEntry);
 
     let buildMatching = (oneOf: matchingBuilderOneOf, collection: Item.collection): matchTryOneOf => {
-        []
+        Belt.List.map(oneOf, (pMatch) => {
+            let rec buildMatch = (match, records) => {
+                switch (match) {
+                    | [] => {
+                        Found(records)
+                    }
+                    | [match, ...rest] => {
+                        switch (match) {
+                            | HashStringMatch(oldRecord, newRecord) => {
+                                let map = Belt.List.reduce(
+                                    records,
+                                    Belt.HashMap.String.make(~hintSize=1000),
+                                    (map, record) => {
+                                        switch (oldRecord(record)) {
+                                            | Some(value) => {
+                                                let current = switch (Belt.HashMap.String.get(map, value)) {
+                                                    | Some(theList) => {
+                                                        theList
+                                                    }
+                                                    | None => {
+                                                        []
+                                                    }
+                                                }
+                                                Belt.HashMap.String.set(
+                                                    map, 
+                                                    Js.String.toLocaleLowerCase(value),
+                                                    [record, ...current]);
+                                                map
+                                            }
+                                            | None => map
+                                        }
+                                    });
+                                let lookup = Belt.HashMap.String.reduce(
+                                    map,
+                                    Belt.HashMap.String.make(~hintSize=1000),
+                                    (map, key, value) => {
+                                        Belt.HashMap.String.set(map, key, buildMatch(rest, value));
+                                        map
+                                    })
+                                Hash(lookup, newRecord)
+                            }
+                            | WordMatch(oldRecord, newRecord) => {
+                                let rec updatePotentialMatches = (matches, findValue, record) => {
+                                    switch (matches) {
+                                        | [] => [(findValue, [record])]
+                                        | [(testValue, records), ...rest] => {
+                                            if (testValue == findValue) {
+                                                [(testValue, [record, ...records]), ...rest]
+                                            } else {
+                                                [(testValue, records)] @ updatePotentialMatches(
+                                                    rest,
+                                                    findValue,
+                                                    record);
+                                            }
+                                        }
+                                    }
+                                }
+                                let value = Belt.List.reduce(records, [], (matches, record) => {
+                                    switch (oldRecord(record)) {
+                                        | Some(value) => {
+                                            let tokenized = A19Core.Core.tokenizeString(value);
+                                            updatePotentialMatches(matches, tokenized, record);
+
+                                        }
+                                        | None => matches
+                                    }
+                                });
+                                let matching = Belt.List.map(value, ((words, records)) => {
+                                    (words, buildMatch(rest, records));
+                                });
+                                Word(matching, newRecord)
+                            }
+                        }
+                    }
+                }
+            }
+            buildMatch(pMatch, Item.asList(collection))
+        })
     }
 
     let findMatch = (oneOf: matchTryOneOf, unknown: Item.unknownRecord): option(Item.record) => {
         None
     }
-};
-
-module type Comparable = {
-  type t;
-  let equal: (t, t) => bool;
-};
-
-module MakeSet = (Item: Comparable) => {
-  /* let's use a list as our naive backing data structure */
-  type backingType = list(Item.t);
-  let empty = [];
-  let add = (currentSet: backingType, newItem: Item.t) : backingType =>
-    /* if item exists */
-    if (List.exists((x) => Item.equal(x, newItem), currentSet)) {
-      currentSet /* return the same (immutable) set (a list really) */
-    } else {
-      [
-        newItem,
-        ...currentSet /* prepend to the set and return it */
-      ]
-    };
 };

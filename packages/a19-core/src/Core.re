@@ -53,3 +53,13 @@ let notADigit = [%re "/[^0-9]/g"]
 let removeNonDigits = (value) => {
     Js.String.replaceByRe(notADigit, "", value);
 }
+
+let whiteSpaceRegex = [%re "/\s+/"];
+
+let tokenizeString = (value) => {
+    Js.String.splitByRe(
+        whiteSpaceRegex,
+         Js.String.toLocaleLowerCase(value))
+         -> Array.to_list
+         -> Belt.List.keepMap(a => a);
+}
