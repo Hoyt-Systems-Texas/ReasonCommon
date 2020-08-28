@@ -21,6 +21,7 @@ module type BasicMatchInfo = {
      */
     let asList: collection => list(record);
 };
+
 module MakeBasicBatch = (Item: BasicMatchInfo) => {
 
     /**

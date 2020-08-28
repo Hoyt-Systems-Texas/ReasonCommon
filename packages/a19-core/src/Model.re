@@ -16,6 +16,7 @@ module State {
     };
 
     let getState = (lookup, name) => {
+        let name = Js.String.trim(name);
         Belt.HashMap.String.get(lookup, Js.String.toLocaleLowerCase(name))
     };
 
