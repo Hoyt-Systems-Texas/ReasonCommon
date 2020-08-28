@@ -21,7 +21,11 @@ module type BasicMatchInfo = {
      */
 
     let reduce: collection => 'a => (('a, record) => 'a) => 'a;
-    let asList: collection => list('a);
+    
+    /**
+     * Converts the collection to a list.
+     */
+    let asList: collection => list(record);
 };
 module MakeBasicBatch = (Item: BasicMatchInfo) => {
 
@@ -126,7 +130,57 @@ module MakeBasicBatch = (Item: BasicMatchInfo) => {
         })
     }
 
-    let findMatch = (oneOf: matchTryOneOf, unknown: Item.unknownRecord): option(Item.record) => {
-        None
+    let rec findMatchEntry = (match: matchTryEntry, unknown: Item.unknownRecord) => {
+        switch (match) {
+            | Hash(map, getValue) => {
+                switch (getValue(unknown)) {
+                    | Some(value) => {
+                        switch (Belt.HashMap.String.get(map, value)) {
+                            | Some(entry) => findMatchEntry(entry, unknown)
+                            | None => []
+                        }
+                    }
+                    | None => []
+                }
+            }
+            | Word(words, getValue) => {
+                switch (getValue(unknown)) {
+                    | Some(value) => {
+                        let tokens = A19Core.Core.tokenizeString(value);
+                        switch (tokens) {
+                            | [] => []
+                            | matchWords => {
+                                Belt.List.reduce(words, [], (match, (words, matchEntry)) => {
+                                    if (matchWords == words) {
+                                        match @ findMatchEntry(matchEntry, unknown)
+                                    } else {
+                                        match
+                                    }
+                                })
+                            }
+                        }
+                    }
+                    | None => []
+                }
+            }
+            | Found(records) => {
+                records
+            }
+        }
+    }
+
+    let findMatchFirst = (oneOf: matchTryOneOf, unknown: Item.unknownRecord): list(Item.record) => {
+        let rec findFirst = (matchEntries) => {
+            switch (matchEntries) {
+                | [] => []
+                | [matchEntry, ...rest] => {
+                    switch (findMatchEntry(matchEntry, unknown)) {
+                        | [] => findFirst(rest)
+                        | match => match
+                    }
+                }
+            }
+        };
+        findFirst(oneOf);
     }
 };
