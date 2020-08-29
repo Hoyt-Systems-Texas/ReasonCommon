@@ -78,7 +78,7 @@ module FloatValidation {
 
     let errors = (t: Validation.floatValidation) => t.baseValidation.validation.errors;
     let update = (t, value) => Validation.validateFloat(t, value);
-    let cean = (t: Validation.floatValidation) => t.clean;
+    let clean = (t: Validation.floatValidation) => t.clean;
     let make = Validation.makeFloatValidation;
 
     let makeDefaultGeo = (~required=false, ~initialValue=(None:option(float)), ~name, ()) => {
