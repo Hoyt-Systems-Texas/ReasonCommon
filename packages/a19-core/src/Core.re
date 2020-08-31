@@ -26,6 +26,15 @@ module Decode = {
     let decodeEmptyResult = json => decodeResultMonad(json, (_) => ());
 }
 
+module UpdateValue = {
+    type t =
+        | Unknown
+        | New
+        | Updated
+        | Same
+        ;
+}
+
 let emptyGuid = "00000000-0000-0000-0000-000000000000";
 
 let parseTimeString = timeString => {
