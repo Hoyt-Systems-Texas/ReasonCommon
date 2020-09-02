@@ -68,7 +68,16 @@ let whiteSpaceRegex = [%re "/\s+/"];
 let tokenizeString = (value) => {
     Js.String.splitByRe(
         whiteSpaceRegex,
-         Js.String.toLocaleLowerCase(value))
+         Js.String.toLocaleLowerCase(Js.String.trim(value)))
          -> Array.to_list
          -> Belt.List.keepMap(a => a);
+}
+
+module FormState = {
+    type t = 
+        | Loading
+        | Edit
+        | Saving
+        | Error(list(string))
+        ;
 }

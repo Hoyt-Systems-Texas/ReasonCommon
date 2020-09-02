@@ -67,7 +67,7 @@ module MakeBasicBatch = (Item: BasicMatchInfo) => {
                                                     | None => {
                                                         []
                                                     }
-                                                }
+                                                };
                                                 Belt.HashMap.String.set(
                                                     map, 
                                                     Js.String.toLocaleLowerCase(value),
