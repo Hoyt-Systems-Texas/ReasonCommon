@@ -42,4 +42,7 @@ module Location {
         lat: float,
         lng: float,
     }
+
+    let kansas = {lat: 38.4773979, lng: -100.5624572};
+
 }
