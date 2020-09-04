@@ -310,12 +310,12 @@ let validatePhoneNumber = (validation, value) => {
         if (String.length(clean) > 10 && String.length(clean) <= 20) {
             // Make sure they are all digits
             if (Js.String.match(allDigits, clean) == None) {
-                (["Phone number is invalid."], None)
+                ([validation.baseValidation.name ++ " phone number is invalid."], None)
             } else {
                 ([], Some(clean))
             }
         } else {
-            (["Phone number not log enough."], None)
+            ([validation.baseValidation.name ++ " phone number not long enough."], None)
         }
     } else {
         switch (validation.baseValidation.required) {

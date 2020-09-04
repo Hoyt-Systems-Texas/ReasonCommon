@@ -26,6 +26,15 @@ module Decode = {
     let decodeEmptyResult = json => decodeResultMonad(json, (_) => ());
 }
 
+module UpdateValue = {
+    type t =
+        | Unknown
+        | New
+        | Updated
+        | Same
+        ;
+}
+
 let emptyGuid = "00000000-0000-0000-0000-000000000000";
 
 let parseTimeString = timeString => {
@@ -52,4 +61,23 @@ let notADigit = [%re "/[^0-9]/g"]
 
 let removeNonDigits = (value) => {
     Js.String.replaceByRe(notADigit, "", value);
+}
+
+let whiteSpaceRegex = [%re "/\s+/"];
+
+let tokenizeString = (value) => {
+    Js.String.splitByRe(
+        whiteSpaceRegex,
+         Js.String.toLocaleLowerCase(Js.String.trim(value)))
+         -> Array.to_list
+         -> Belt.List.keepMap(a => a);
+}
+
+module FormState = {
+    type t = 
+        | Loading
+        | Edit
+        | Saving
+        | Error(list(string))
+        ;
 }
