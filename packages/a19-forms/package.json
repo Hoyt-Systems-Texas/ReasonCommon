@@ -12,7 +12,6 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "^8.2.0"
   },
   "workspaceDependencies": [
     "a19-core"
