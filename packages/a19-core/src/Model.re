@@ -55,4 +55,19 @@ module Location {
         };
     }
 
+    module Haversine {
+
+        let earthRadiusMeters = 6_371_000.0
+        let calculate = (p1, p2) => {
+            let phi1 = Math.toRadians(p1.lat);
+            let phi2 = Math.toRadians(p2.lat);
+            let changePhi = Math.toRadians((p2.lat -. p1.lat));
+            let changeLambda = Math.toRadians((p2.lng -. p1.lng));
+            let a = Js.Math.sin(changePhi /. 2.0) *. Js.Math.sin(changePhi /. 2.0) +.
+                Js.Math.cos(phi1) *. Js.Math.cos(phi2) *.
+                Js.Math.sin(changeLambda /. 2.0) *. Js.Math.sin(changeLambda /. 2.0);
+            let c = 2.0 *. Js.Math.atan2(~y=Js.Math.sqrt(a), ~x=Js.Math.sqrt(1.0 -.a), ())
+            earthRadiusMeters *. c
+        };
+    }
 }
