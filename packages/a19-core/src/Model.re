@@ -70,4 +70,20 @@ module Location {
             earthRadiusMeters *. c
         };
     }
+
+    module Destination {
+        let calculate = (start, bearing, distance) => {
+            let sPhi = Math.toRadians(start.lat);
+            let sLambda = Math.toRadians(start.lng);
+            let bearing = Math.toRadians(bearing);
+            let lat = asin(sin(sPhi) *. cos(distance /. Haversine.earthRadiusMeters) +.
+                        cos(sPhi) *. sin(distance /. Haversine.earthRadiusMeters) *. cos(bearing));
+            let lng = sLambda +. atan2(sin(bearing) *. sin(distance /. Haversine.earthRadiusMeters) *. cos(sPhi), 
+                             cos(distance /. Haversine.earthRadiusMeters) -. sin(sPhi) *. sin(lat));
+            {
+                lat: (Math.toDegress(lat)),
+                lng: (Math.toDegress(lng))
+            }
+        }
+    }
 }
