@@ -43,6 +43,16 @@ module Location {
         lng: float,
     }
 
+    // A good starting place for the US.
     let kansas = {lat: 38.4773979, lng: -100.5624572};
+
+    module LatLngBounds {
+        type t = {
+            east: geoCode,
+            north: geoCode,
+            south: geoCode,
+            west: geoCode
+        };
+    }
 
 }
