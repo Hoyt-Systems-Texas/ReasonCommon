@@ -73,16 +73,24 @@ module Location {
 
     module Destination {
         let calculate = (start, bearing, distance) => {
-            let sPhi = Math.toRadians(start.lat);
-            let sLambda = Math.toRadians(start.lng);
+            /**
+            * const φ2 = Math.asin( Math.sin(φ1)*Math.cos(d/R) +
+            * Math.cos(φ1)*Math.sin(d/R)*Math.cos(brng) );
+            * const λ2 = λ1 + Math.atan2(Math.sin(brng)*Math.sin(d/R)*Math.cos(φ1),
+            * Math.cos(d/R)-Math.sin(φ1)*Math.sin(φ2));k
+             */
+            let phi1 = Math.toRadians(start.lat);
+            let lmd1 = Math.toRadians(start.lng);
             let bearing = Math.toRadians(bearing);
-            let lat = asin(sin(sPhi) *. cos(distance /. Haversine.earthRadiusMeters) +.
-                        cos(sPhi) *. sin(distance /. Haversine.earthRadiusMeters) *. cos(bearing));
-            let lng = sLambda +. atan2(sin(bearing) *. sin(distance /. Haversine.earthRadiusMeters) *. cos(sPhi), 
-                             cos(distance /. Haversine.earthRadiusMeters) -. sin(sPhi) *. sin(lat));
+            let distanceHov = distance /. Haversine.earthRadiusMeters;
+            let phi2 = asin(
+                sin(phi1) *. cos(distanceHov) +.
+                cos(phi1) *. sin(distanceHov) *. cos(bearing));
+            let lmd2 = lmd1 +. atan2(sin(bearing) *. sin(distanceHov) *. cos(phi1), 
+                             cos(distanceHov) -. sin(phi1) *. sin(phi2));
             {
-                lat: (Math.toDegress(lat)),
-                lng: (Math.toDegress(lng))
+                lat: (Math.toDegress(phi2)),
+                lng: (Math.toDegress(lmd2))
             }
         }
     }
