@@ -81,3 +81,15 @@ module FormState = {
         | Error(list(string))
         ;
 }
+
+module VisibleState {
+    type t =
+    | Show
+    | Hide
+    ;
+
+    let toggle = (t) => switch (t) {
+        | Show => Hide
+        | Hide => Show
+    };
+}
