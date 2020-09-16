@@ -15,14 +15,14 @@ module Time {
         }
     };
 
-    let toTimeMins = (date, timezone) => {
+    let toTzKeepTime = (date, timezone) => {
         let hour = string_of_int(MomentRe.Moment.hour(date));
         let minutes = formatTime(MomentRe.Moment.minute(date));
         let seconds = formatTime(MomentRe.Moment.second(date));
-        let newTime = Timezone.withTz(
+        Timezone.withTz(
             "1970-1-1 " ++
              hour ++ ":" ++ 
              minutes ++ ":" ++ 
-             seconds, timezone)
+             seconds, timezone);
     }
 }
