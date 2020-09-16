@@ -93,3 +93,13 @@ module VisibleState {
         | Hide => Show
     };
 }
+
+module OptionExt {
+
+    let map = (t, f) => {
+        switch (t) {
+            | Some(a) => Some(f(a))
+            | None => None
+        }
+    }
+}

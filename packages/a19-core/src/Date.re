@@ -25,4 +25,8 @@ module Time {
              minutes ++ ":" ++ 
              seconds, timezone);
     }
+
+    let toMinsFromEpoc = (date) => {
+        MomentRe.Moment.toUnix(date) / 60
+    }
 }
