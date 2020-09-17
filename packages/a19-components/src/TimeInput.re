@@ -163,6 +163,18 @@ let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string, ~time
         onChange(state.timeString.clean);
         None;
     }, [|state|]);
+    React.useEffect1(() => {
+        switch (time) {
+            | Some(date) => {
+                let t = MomentRe.Moment.format("hh:mm A", date);
+                setState(s => {
+                    timeString: A19Forms.Validation.validationTime(state.timeString, t)
+                })
+            }
+            | None => ()
+        }
+        None
+    }, [|time|]);
     <>
         <input type_="text"
                placeholder="HH:MM AM|PM"

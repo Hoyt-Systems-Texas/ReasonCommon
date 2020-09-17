@@ -51,4 +51,8 @@ module Time {
         |> MomentRe.Moment.toUnix;
         unixTime / 60
     }
+
+    let fromUnixEpoc = (mins) => {
+        MomentRe.momentWithUnix(mins * 60)
+    }
 }
