@@ -1,10 +1,25 @@
 module Time {
 
+    [@bs.new][@bs.module("moment-timezone")]
+    external ignore_me: unit => unit = "aaa";
+
+    let makeIgnore = () => {
+        ignore_me();
+    }
+
     module Timezone {
 
+        [@bs.send]
         external tz : MomentRe.Moment.t => string => MomentRe.Moment.t = "tz";
 
+        [@bs.module("moment")]
         external withTz: string => string => MomentRe.Moment.t = "tz";
+
+        [@bs.send]
+        external utc: MomentRe.Moment.t => MomentRe.Moment.t = "utc";
+
+        [@bs.send]
+        external utcFrom: string => MomentRe.Moment.t = "utc";
     };
 
     let formatTime = (number: int) => {
@@ -16,17 +31,24 @@ module Time {
     };
 
     let toTzKeepTime = (date, timezone) => {
-        let hour = string_of_int(MomentRe.Moment.hour(date));
+        let hour = formatTime(MomentRe.Moment.hour(date));
         let minutes = formatTime(MomentRe.Moment.minute(date));
         let seconds = formatTime(MomentRe.Moment.second(date));
-        Timezone.withTz(
-            "1970-1-1 " ++
+        let time = "1970-01-01 " ++
              hour ++ ":" ++ 
              minutes ++ ":" ++ 
-             seconds, timezone);
+             seconds;
+        Js.Console.log3(hour, minutes, seconds);
+        let time = Timezone.withTz(
+            time, timezone);
+        time
     }
 
     let toMinsFromEpoc = (date) => {
-        MomentRe.Moment.toUnix(date) / 60
+        let unixTime = date
+        -> MomentRe.Moment.clone
+        -> Timezone.tz("UTC")
+        |> MomentRe.Moment.toUnix;
+        unixTime / 60
     }
 }
