@@ -4,8 +4,8 @@ type t;
 
 [@bs.send] external setItem_: t => string => string => unit = "setItem";
 
-[@bs.send] external getItem_: t => string => string = "getItem";
+[@bs.send] external getItem_: t => string => Js.Nullable.t(string) = "getItem";
 
 let setItem = (key, value) => setItem_(localStorage_, key, value);
 
-let getItem = (key) => getItem_(localStorage_, key);
+let getItem = (key) => Js.Nullable.toOption(getItem_(localStorage_, key));
