@@ -37,6 +37,13 @@ module Address {
     };
 }
 
+module Convert {
+
+    let toMiles = (meters) => {
+        meters *. 0.000621371
+    }
+}
+
 module Location {
     type geoCode = {
         lat: float,
