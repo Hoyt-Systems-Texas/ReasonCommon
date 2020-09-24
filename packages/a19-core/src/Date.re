@@ -56,3 +56,11 @@ module Time {
         MomentRe.momentWithUnix(mins * 60)
     }
 }
+
+let toString (date) = {
+    MomentRe.Moment.format("YYYY-MM-DD", date)
+}
+
+let toStringOption(date) = {
+    Core.OptionExt.map(date, toString)
+}
