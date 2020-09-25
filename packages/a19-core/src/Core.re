@@ -48,14 +48,18 @@ let parseTimeString = timeString => {
 
 let getTotalMinutes = date => {
     MomentRe.Moment.toUnix(date) / 60
-}
+};
 
-type asyncLoadState('a) =
-    | Pending
-    | Loading
-    | Loaded('a)
-    | LoadFailed
-    ;
+module AsyncLoadState = {
+
+    type t('a) =
+        | Pending
+        | Loading
+        | Loaded('a)
+        | LoadFailed
+        ;
+};
+
 
 let notADigit = [%re "/[^0-9]/g"]
 
