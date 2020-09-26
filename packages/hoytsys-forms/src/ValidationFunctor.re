@@ -33,14 +33,14 @@ let genRequired = (name, required) => {
 }
 
 module StringValidation {
-    type t = Validation.stringValidation;
+    type t = Validation.StringValidation.t;
     type value = string;
     type cleaned = option(string);
 
-    let errors = (t: Validation.stringValidation) => t.baseValidation.validation.errors;
-    let update = (t, value) => Validation.validateString(t, value);
-    let clean = (t: Validation.stringValidation) => t.clean;
-    let make = Validation.makeStringValidation;
+    let errors = (t: Validation.StringValidation.t) => t.baseValidation.validation.errors;
+    let update = (t, value) => Validation.StringValidation.validate(t, value);
+    let clean = (t: Validation.StringValidation.t) => t.clean;
+    let make = Validation.StringValidation.make;
     let makeDefaultFieldSize = (~required=false, ~maxLength=100, ~initialValue=(None: option(string)), ~name: string, ()) => {
         make(
             ~name,
@@ -53,14 +53,14 @@ module StringValidation {
 };
 
 module PostalCodeValidation {
-    type t = Validation.postalCodeValidation;
+    type t = Validation.PostalCodeValidation.t;
     type value = string;
     type clean = option(string);
 
-    let errors = (t: Validation.postalCodeValidation) => t.baseValidation.validation.errors;
-    let update = (t, value) => Validation.validatePostalCode(t, value);
-    let clean = (t: Validation.postalCodeValidation) => t.clean;
-    let make = Validation.makePostalCodeValidation;
+    let errors = (t: Validation.PostalCodeValidation.t) => t.baseValidation.validation.errors;
+    let update = (t, value) => Validation.PostalCodeValidation.validate(t, value);
+    let clean = (t: Validation.PostalCodeValidation.t) => t.clean;
+    let make = Validation.PostalCodeValidation.make;
 
     let makeDefault = (~required=false, ~initialValue=(None: option(string)), ~name, ()) => {
         make(
@@ -72,14 +72,14 @@ module PostalCodeValidation {
 }
 
 module FloatValidation {
-    type t = Validation.floatValidation;
+    type t = Validation.FloatValidation.t;
     type value = string;
     type clean = option(float);
 
-    let errors = (t: Validation.floatValidation) => t.baseValidation.validation.errors;
-    let update = (t, value) => Validation.validateFloat(t, value);
-    let clean = (t: Validation.floatValidation) => t.clean;
-    let make = Validation.makeFloatValidation;
+    let errors = (t: Validation.FloatValidation.t) => t.baseValidation.validation.errors;
+    let update = (t, value) => Validation.FloatValidation.validate(t, value);
+    let clean = (t: Validation.FloatValidation.t) => t.clean;
+    let make = Validation.FloatValidation.make;
 
     let makeDefaultGeo = (~required=false, ~initialValue=(None:option(float)), ~name, ()) => {
         make(
@@ -93,12 +93,12 @@ module FloatValidation {
 }
 
 module PhoneNumberValidation {
-    type t = Validation.phoneNumberValidation;
+    type t = Validation.PhoneNumberValidation.t;
     type value = string;
     type clean = option(string);
 
-    let errors = (t: Validation.phoneNumberValidation) => t.baseValidation.validation.errors;
-    let update = (t, value) => Validation.validatePhoneNumber(t, value);
+    let errors = (t: Validation.PhoneNumberValidation.t) => t.baseValidation.validation.errors;
+    let update = (t, value) => Validation.PhoneNumberValidation.validate(t, value);
     let fixValue = (t, value) => {
         let digits = HoytsysCore.Core.removeNonDigits(value);
         if (Js.String.length(digits) == 10) {
@@ -108,8 +108,8 @@ module PhoneNumberValidation {
         }
     };
 
-    let clean = (t: Validation.phoneNumberValidation) => t.clean;
-    let make = Validation.makePhoneNumberValidation;
+    let clean = (t: Validation.PhoneNumberValidation.t) => t.clean;
+    let make = Validation.PhoneNumberValidation.make;
     let makeDefault = (~required=false, ~initialValue=(None:option(string)), ~name, ()) => {
         make(
             ~name,
@@ -119,14 +119,14 @@ module PhoneNumberValidation {
 }
 
 module IntValidation {
-    type t = Validation.intValidation;
+    type t = Validation.IntValidation.t;
     type value = string;
     type clean = option(int);
 
-    let errors = (t: Validation.intValidation) => t.baseValidation.validation.errors;
-    let update = (t, value) => Validation.validateInt(t, value);
-    let clean = (t: Validation.intValidation) => t.clean;
-    let make = Validation.makeIntValidation;
+    let errors = (t: Validation.IntValidation.t) => t.baseValidation.validation.errors;
+    let update = (t, value) => Validation.IntValidation.validate(t, value);
+    let clean = (t: Validation.IntValidation.t) => t.clean;
+    let make = Validation.IntValidation.make;
     let makeDefaultPos = (~required=false, ~initialValue=(None:option(int)), ~maxValue=100_000_000, ~name, ()) => {
         make(
             ~name,
@@ -139,14 +139,14 @@ module IntValidation {
 }
 
 module UrlValidation {
-    type t = Validation.urlValidation;
+    type t = Validation.UrlValidation.t;
     type value = string;
     type clean = option(string);
 
-    let errors = (t: Validation.urlValidation) => t.baseValidation.validation.errors;
-    let update = (t, value) => Validation.validationUrl(t, value);
-    let clean = (t: Validation.urlValidation) => t.clean;
-    let make = Validation.makeUrlValidation;
+    let errors = (t: Validation.UrlValidation.t) => t.baseValidation.validation.errors;
+    let update = (t, value) => Validation.UrlValidation.validate(t, value);
+    let clean = (t: Validation.UrlValidation.t) => t.clean;
+    let make = Validation.UrlValidation.make;
     let makeDefault = (~required=false, ~initialValue=(None:option(string)), ~maxLength=255, ~name, ()) => {
         make(
             ~name,
@@ -159,14 +159,14 @@ module UrlValidation {
 }
 
 module EmailValidation {
-    type t = Validation.emailValidation;
+    type t = Validation.EmailValidation.t;
     type value = string;
     type clean = option(string);
 
-    let errors = (t: Validation.emailValidation) => t.baseValidation.validation.errors;
-    let update = (t, value) => Validation.validationEmail(t, value);
-    let clean = (t: Validation.emailValidation) => t.clean;
-    let make = Validation.makeEmailValidation;
+    let errors = (t: Validation.EmailValidation.t) => t.baseValidation.validation.errors;
+    let update = (t, value) => Validation.EmailValidation.validate(t, value);
+    let clean = (t: Validation.EmailValidation.t) => t.clean;
+    let make = Validation.EmailValidation.make;
     let makeDefault = (~required=false, ~initialValue=(None:option(string)), ~maxLength=255, ~name, ()) => {
         make(
             ~name,
@@ -176,4 +176,13 @@ module EmailValidation {
             ~maxLength
         )
     }
+}
+
+module EnumerateValidation {
+    type t('a) = Validation.EnumerateValueValidation.t('a);
+
+    let errors(t: t('a)) = t.validation.errors;
+    let update(t, value) = Validation.EnumerateValueValidation.validate(t, value);
+    let clean(t: t('a)) = t.value;
+    let make = Validation.EnumerateValueValidation.make;
 }
