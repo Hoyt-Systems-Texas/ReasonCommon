@@ -1,0 +1,25 @@
+{
+  "name": "hoytsys-google",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world",
+    "test": "bsb -make-world && jest"
+  },
+  "keywords": [
+    "BuckleScript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "bs-platform": "^8.2.0",
+    "whatwg-fetch": "^3.4.0"
+  },
+  "workspaceDependencies": [
+    "hoytsys-core"
+  ],
+  "jest": {
+    "setupFiles": ["./setup_jest.js"]
+  } 
+}
