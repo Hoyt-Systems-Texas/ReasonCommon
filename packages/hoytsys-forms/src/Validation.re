@@ -1,3 +1,5 @@
+open HoytsysCore.Date;
+
 type validation = {
     errors: list(string),
     dirty: bool,
@@ -638,8 +640,72 @@ module DateValidation {
         clean: option(MomentRe.Moment.t),
         value: string,
         name: string,
+        required: option(string),
         minDate: MomentRe.Moment.t,
         maxDate: MomentRe.Moment.t,
     };
 
+    let make(~name, ~required, ~initialValue, ~minDate, ~maxDate) {
+        let date = switch(initialValue) {
+            | Some(d) => DateHelpers.toStringUs(d)
+            | None => ""
+        };
+        {
+            validation: {
+                dirty: false,
+                errors: []
+            },
+            required,
+            clean: initialValue,
+            value: date,
+            name,
+            minDate,
+            maxDate,
+        }
+    }
+
+    let validate = (validation, value) => {
+        let dirty = true;
+        let clean = String.trim(value);
+        let (clean, errors) = {
+            let length = String.length(clean);
+            if (length > 0) {
+                switch (DateHelpers.fromString(clean)) {
+                    | Some(d) => {
+                        let errors = if (MomentRe.Moment.isBefore(d, validation.minDate)) {
+                            ["Date must be after " ++ DateHelpers.toStringUs(validation.minDate)]
+                        } else {
+                            []
+                        } @ if (MomentRe.Moment.isAfter(d, validation.maxDate)) {
+                            ["Date must be before " ++ DateHelpers.toStringUs(validation.maxDate)]
+                        } else {
+                            []
+                        };
+                        if (List.length(errors) > 0) {
+                            (None, errors);
+                        } else {
+                            (Some(d), errors);
+                        }
+                    }
+                    | None => {
+                        (None, ["Invalid date format."])
+                    }
+                }
+            } else {
+                switch (validation.required) {
+                    | Some(value) => (None, [value])
+                    | None => (None, [])
+                }
+            }
+        };
+        {
+            ...validation,
+            validation: {
+                ...validation.validation,
+                errors,
+            },
+            clean,
+            value
+        }
+    }
 }

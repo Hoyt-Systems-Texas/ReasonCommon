@@ -57,10 +57,26 @@ module Time {
     }
 }
 
-let toString (date) = {
-    MomentRe.Moment.format("YYYY-MM-DD", date)
-}
+module DateHelpers {
 
-let toStringOption(date) = {
-    Core.OptionExt.map(date, toString)
+    let isoFormat = "YYYY-MM-DD";
+    let usFormat = "MM/DD/YYYY";
+
+    let toString (date) = {
+        MomentRe.Moment.format(isoFormat, date)
+    }
+
+    let toStringUs(date) = {
+        MomentRe.Moment.format(usFormat, date)
+    }
+
+    let toStringOption(date) = {
+        Core.OptionExt.map(date, toString)
+    }
+
+    let fromString(date) = {
+        try(Some(MomentRe.momentWithFormat(date, usFormat))) {
+            | _ => None
+        }
+    }
 }
