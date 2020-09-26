@@ -1,5 +1,5 @@
 {
-  "name": "a19-components",
+  "name": "hoytsys-components",
   "reason": {
     "react-jsx": 3
   },
@@ -19,8 +19,8 @@
   "bs-dependencies": [
     "bs-webapi",
     "reason-react",
-    "a19-core",
-    "a19-forms",
+    "hoytsys-core",
+    "hoytsys-forms",
     "bs-moment"
   ],
   "refmt": 3

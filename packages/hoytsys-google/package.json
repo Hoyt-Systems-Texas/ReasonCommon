@@ -1,5 +1,5 @@
 {
-  "name": "a19-core",
+  "name": "hoytsys-google",
   "version": "0.1.0",
   "scripts": {
     "build": "bsb -make-world",
@@ -13,7 +13,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "bs-platform": "^8.2.0",
+    "whatwg-fetch": "^3.4.0"
   },
-  "dependencies": {
-  }
+  "workspaceDependencies": [
+    "hoytsys-core"
+  ],
+  "jest": {
+    "setupFiles": ["./setup_jest.js"]
+  } 
 }

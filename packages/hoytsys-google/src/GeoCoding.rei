@@ -1,5 +1,5 @@
-open A19Core.Model.Address;
-open A19Core.Model.Location;
+open HoytsysCore.Model.Address;
+open HoytsysCore.Model.Location;
 
 
 type viewPort = {
@@ -33,4 +33,4 @@ type geoCodingResult =
     | UnknownResponse
     ;
 
-let getGeoCoding : string => address => Js.Promise.t(A19Core.Core.resultMonad(geoCodingResult));
+let getGeoCoding : string => address => Js.Promise.t(HoytsysCore.Core.resultMonad(geoCodingResult));

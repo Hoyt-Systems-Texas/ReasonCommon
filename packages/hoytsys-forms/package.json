@@ -1,5 +1,5 @@
 {
-  "name": "a19-forms",
+  "name": "hoytsys-forms",
   "version": "0.1.0",
   "scripts": {
     "build": "bsb -make-world",
@@ -14,7 +14,7 @@
   "devDependencies": {
   },
   "workspaceDependencies": [
-    "a19-core"
+    "hoytsys-core"
   ],
   "dependencies": {
   }

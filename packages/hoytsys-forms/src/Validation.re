@@ -587,7 +587,7 @@ let makeTimeValidation = (~name, ~initialValue) => {
 }
 
 let validationTime = (validation, value) => {
-    let clean = A19Core.Core.parseTimeString(value);
+    let clean = HoytsysCore.Core.parseTimeString(value);
     let errors = switch (clean) {
         | Some(_) => {
             []

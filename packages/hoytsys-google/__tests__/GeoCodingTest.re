@@ -7,8 +7,8 @@ let googleApiKey = "AIzaSyCB1zYbkydr_QecDgZ18XPSktSLapbgHd4";
 describe("Fectch google check.", () => {
     open Expect;
     open GeoCoding;
-    open A19Core.Model.Address;
-    open A19Core.Model.State;
+    open HoytsysCore.Model.Address;
+    open HoytsysCore.Model.State;
 
     testPromise("Check geo coding of an address", () => {
         Js.Promise.(
@@ -30,7 +30,7 @@ describe("Fectch google check.", () => {
             })
             |> then_(result => {
                 switch (result) {
-                    | A19Core.Core.Success(g) => {
+                    | HoytsysCore.Core.Success(g) => {
                         Js.Console.log(g);
                         resolve(expect(true) |> toBe(true))
                     }

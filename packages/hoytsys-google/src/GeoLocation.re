@@ -1,4 +1,4 @@
-open A19Core.Model.Location;
+open HoytsysCore.Model.Location;
 
 module GeoLocation {
     type geoLocationSuccess;
@@ -34,9 +34,9 @@ let getLocation = () => {
         GeoLocation.getLocation(
             GeoLocation.geoLocation,
              success => {
-            resolve(. A19Core.Core.Success(GeoLocation.fromGeoLocation(success)))
+            resolve(. HoytsysCore.Core.Success(GeoLocation.fromGeoLocation(success)))
         }, _ => {
-            resolve(. A19Core.Core.Error([|"Unable to get the location"|]))
+            resolve(. HoytsysCore.Core.Error([|"Unable to get the location"|]))
         });
     });
 };

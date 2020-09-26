@@ -2,7 +2,7 @@ open Jest;
 
 describe("Clean number test", () => {
     open Expect;
-    open A19Core.Core;
+    open HoytsysCore.Core;
 
     test("Test remove digits", () => {
         let result = removeNonDigits(" 1+2++3+4#5");

@@ -10,7 +10,7 @@ type timeType =
     ;
 
 type state = {
-    timeString: A19Forms.Validation.timeValidation,
+    timeString: HoytsysForms.Validation.timeValidation,
 };
 
 type inputState = {
@@ -21,7 +21,7 @@ type inputState = {
 [@react.component]
 let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string, ~time=(None: option(MomentRe.Moment.t))) => {
     let (state, setState) = React.useState(_ => {
-        timeString: A19Forms.Validation.makeTimeValidation(~name=name, ~initialValue=None),
+        timeString: HoytsysForms.Validation.makeTimeValidation(~name=name, ~initialValue=None),
     });
     let (inputState, setInputState) = React.useState(_ => {
         timeType: Undetermined,
@@ -156,7 +156,7 @@ let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string, ~time
             }
         };
         setState(state => {
-            timeString: A19Forms.Validation.validationTime(state.timeString, time),
+            timeString: HoytsysForms.Validation.validationTime(state.timeString, time),
         });
     };
     React.useEffect1(() => {
@@ -168,7 +168,7 @@ let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string, ~time
             | Some(date) => {
                 let t = MomentRe.Moment.format("hh:mm A", date);
                 setState(s => {
-                    timeString: A19Forms.Validation.validationTime(state.timeString, t)
+                    timeString: HoytsysForms.Validation.validationTime(state.timeString, t)
                 })
             }
             | None => ()

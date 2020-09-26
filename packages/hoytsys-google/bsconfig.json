@@ -1,12 +1,13 @@
 {
-  "name": "a19-core",
+  "name": "hoytsys-google",
   "version": "0.1.0",
-  "sources": [{
-      "dir" : "src",
-      "subdirs" : true
-    },{
+  "sources": [
+    {
       "dir": "__tests__",
       "type": "dev"
+    }, {
+      "dir" : "src",
+      "subdirs" : true
     }
   ],
   "package-specs": {
@@ -15,9 +16,10 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "hoytsys-core",
+    "@glennsl/bs-jest",
     "@glennsl/bs-json",
-    "bs-moment",
-    "@glennsl/bs-jest"
+    "bs-fetch"
   ],
   "warnings": {
     "error" : "+101"

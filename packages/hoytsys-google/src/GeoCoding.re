@@ -1,5 +1,5 @@
-open A19Core.Model.Address;
-open A19Core.Model.Location;
+open HoytsysCore.Model.Address;
+open HoytsysCore.Model.Location;
 
 let geocodingUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 
@@ -111,11 +111,11 @@ let getGeoCoding = (apiKey, address) => {
     Fetch.fetch(url)
         |> then_(Fetch.Response.json)
         |> then_(json => {
-            resolve(A19Core.Core.Success(Decode.decodeGeoCodingResult(json)))
+            resolve(HoytsysCore.Core.Success(Decode.decodeGeoCodingResult(json)))
         })
         |> catch(error => {
             Js.Console.log(error);
-            resolve(A19Core.Core.Error([|"Unexpected error has occurrent while fetching the geo code"|]))
+            resolve(HoytsysCore.Core.Error([|"Unexpected error has occurrent while fetching the geo code"|]))
         })
     )
 }

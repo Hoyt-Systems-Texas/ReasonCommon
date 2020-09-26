@@ -2,7 +2,7 @@ open Jest;
 
 describe("Haversine test", () => {
     open Expect;
-    open A19Core.Core;
+    open HoytsysCore.Core;
 
     test("calculate test", () => {
         let dist =  Model.Location.Haversine.calculate({
@@ -18,7 +18,7 @@ describe("Haversine test", () => {
 
 describe("Destination test", () => {
     open Expect;
-    open A19Core.Core;
+    open HoytsysCore.Core;
 
     let dist = Model.Location.Destination.calculate({
         lat: 20.0,

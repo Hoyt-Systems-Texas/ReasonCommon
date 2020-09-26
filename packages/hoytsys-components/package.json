@@ -1,5 +1,5 @@
 {
-  "name": "a19-components",
+  "name": "hoytsys-components",
   "version": "0.1.0",
   "scripts": {
     "build": "bsb -make-world",
