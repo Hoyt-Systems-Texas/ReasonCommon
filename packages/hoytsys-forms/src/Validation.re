@@ -701,7 +701,7 @@ module DateValidation {
         {
             ...validation,
             validation: {
-                ...validation.validation,
+                dirty: dirty,
                 errors,
             },
             clean,
