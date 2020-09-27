@@ -12,6 +12,15 @@ type baseValidation = {
     name: string,
 };
 
+let hasErrors(errors) {
+    Belt.Array.reduce(
+        errors, 
+        false, 
+        (b, e) => {
+            b || Belt.List.length(e) > 0
+        });
+}
+
 module StringValidation {
     type t = {
         baseValidation,
