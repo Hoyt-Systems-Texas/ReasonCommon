@@ -80,6 +80,10 @@ module DateHelpers {
         }
     }
 
+    let fromStringIso(date) = {
+        fromFormat(isoFormat, date)
+    }
+
     let fromStringUs(date) = {
         fromFormat(usFormat, date)
     }

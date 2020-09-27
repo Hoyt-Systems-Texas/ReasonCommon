@@ -16,7 +16,7 @@ let make = (~value=None, ~onChange) => {
         setDate(_ => d);
     };
     React.useEffect1(_ => {
-        switch (HoytsysCore.Date.DateHelpers.fromStringUs(date)) {
+        switch (HoytsysCore.Date.DateHelpers.fromStringIso(date)) {
             | Some(d) => {
                 onChange(Some(d));
             }

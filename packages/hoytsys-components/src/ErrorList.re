@@ -9,7 +9,7 @@ let make = (~errors: validation) => {
                 <ul className="errors">
                     {errors
                         -> Belt.List.map(error => {
-                            <li>
+                            <li key={error}>
                                 {React.string(error)}
                             </li>
                             })
