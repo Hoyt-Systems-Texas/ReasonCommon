@@ -74,9 +74,13 @@ module DateHelpers {
         Core.OptionExt.map(date, toString)
     }
 
-    let fromString(date) = {
-        try(Some(MomentRe.momentWithFormat(date, usFormat))) {
+    let fromFormat(format, date) = {
+        try(Some(MomentRe.momentWithFormat(date, format))) {
             | _ => None
         }
+    }
+
+    let fromStringUs(date) = {
+        fromFormat(usFormat, date)
     }
 }
