@@ -184,6 +184,6 @@ let make = (~onChange: (option(MomentRe.Moment.t)) => unit, ~name: string, ~time
                onKeyDown={e => onKeyDown(e)}
                onChange={e => onInputChange(ReactEvent.Synthetic.target(e)##value)}
                onKeyPress={e => onKeyPress(e)} />
-        <ErrorList errors=state.timeString.validation.errors />
+        <ErrorList errors=state.timeString.validation />
     </>
 }

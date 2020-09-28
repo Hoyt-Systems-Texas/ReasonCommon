@@ -70,13 +70,25 @@ module DateHelpers {
         MomentRe.Moment.format(usFormat, date)
     }
 
+    let toStringIso(date) = {
+        MomentRe.Moment.format(isoFormat, date);
+    }
+
     let toStringOption(date) = {
         Core.OptionExt.map(date, toString)
     }
 
-    let fromString(date) = {
-        try(Some(MomentRe.momentWithFormat(date, usFormat))) {
+    let fromFormat(format, date) = {
+        try(Some(MomentRe.momentWithFormat(date, format))) {
             | _ => None
         }
+    }
+
+    let fromStringIso(date) = {
+        fromFormat(isoFormat, date)
+    }
+
+    let fromStringUs(date) = {
+        fromFormat(usFormat, date)
     }
 }
