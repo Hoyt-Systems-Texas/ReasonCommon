@@ -70,6 +70,10 @@ module DateHelpers {
         MomentRe.Moment.format(usFormat, date)
     }
 
+    let toStringIso(date) = {
+        MomentRe.Moment.format(isoFormat, date);
+    }
+
     let toStringOption(date) = {
         Core.OptionExt.map(date, toString)
     }

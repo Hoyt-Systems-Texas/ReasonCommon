@@ -4,7 +4,7 @@ let make = (~value=None, ~onChange) => {
     React.useEffect1(_ => {
         switch (value) {
             | Some(d) => {
-                setDate(_ => HoytsysCore.Date.DateHelpers.toStringUs(d));
+                setDate(_ => HoytsysCore.Date.DateHelpers.toStringIso(d));
             }
             | None => {
                 setDate(_ => "");
@@ -27,6 +27,6 @@ let make = (~value=None, ~onChange) => {
     <div className="date-picker">
         <input type_="date"
                onChange={e => onDateChange(ReactEvent.Synthetic.target(e)##value)}
-               value=date />
+               value={date} />
     </div>
 }
