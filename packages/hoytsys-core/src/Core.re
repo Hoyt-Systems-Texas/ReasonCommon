@@ -107,3 +107,10 @@ module OptionExt {
         }
     }
 }
+
+let option_string_to_string(s) = {
+    switch (s) {
+        | Some(s) => s
+        | None => ""
+    }
+}
