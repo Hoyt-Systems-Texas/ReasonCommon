@@ -27,7 +27,7 @@ let make = (~columns, ~data, ~pageSize, ~rowKey) => {
     let (currentPage, setCurrentPage) = React.useState(_ => 0);
     React.useEffect2(_ => {
         let total = Belt.Array.length(data);
-        let pages = pageSize / total + if (total mod pageSize == 0) {
+        let pages = total / pageSize + if (total mod pageSize == 0) {
             0
         } else {
             1
@@ -48,39 +48,87 @@ let make = (~columns, ~data, ~pageSize, ~rowKey) => {
         });
         None;
     }, [|currentPage|]);
-    <table>
-        <thead>
-            <tr>
+    let selectPage(page) = {
+        setCurrentPage(_ => page - 1);
+    };
+    let prevPage() = {
+        setCurrentPage(p => {
+            if (p > 0) {
+                p - 1;
+            } else {
+                0
+            }
+        });
+    };
+    let nextPage() = {
+        setCurrentPage(p => {
+            if (p + 1 < dataset.pages) {
+                p + 1;
+            } else {
+                p
+            }
+        })
+    };
+    <div className="data-grid">
+        <table>
+            <thead>
+                <tr>
+                    {
+                        columns
+                        -> Belt.Array.map(m => {
+                            <th key=m.key>
+                                {m.header}
+                            </th>
+                        })
+                        -> React.array
+                    }
+                </tr>
+            </thead>
+            <tbody>
                 {
-                    columns
-                    -> Belt.Array.map(m => {
-                        <th key=m.key>
-                            {m.header}
-                        </th>
+                    data
+                    -> Belt.Array.slice(~offset=offset.start, ~len=pageSize)
+                    -> Belt.Array.map(d => {
+                        <tr key={rowKey(d)}>
+                            {
+                                columns
+                                -> Belt.Array.map(c => {
+                                    <td key={c.key}>
+                                        {c.render(d)}
+                                    </td>
+                                })
+                                -> React.array
+                            }
+                        </tr>
                     })
                     -> React.array
                 }
-            </tr>
-        </thead>
-        <tbody>
+            </tbody>
+        </table>
+        <div className="paging">
+            <span className="page"
+                  onClick={_ => prevPage()}>
+                {React.string("<")}
+            </span>
             {
-                data
-                -> Belt.Array.slice(~offset=offset.start, ~len=pageSize)
-                -> Belt.Array.map(d => {
-                    <tr key={rowKey(d)}>
-                        {
-                            columns
-                            -> Belt.Array.map(c => {
-                                <td key={c.key}>
-                                    {c.render(d)}
-                                </td>
-                            })
-                            -> React.array
-                        }
-                    </tr>
+                Belt.Array.range(1, dataset.pages)
+                -> Belt.Array.map(p => {
+                    let className = if (currentPage == p - 1) {
+                        "page selected"
+                    } else {
+                        "page"
+                    };
+                    <span className=className
+                          onClick={_ => selectPage(p)}>
+                        {React.string(string_of_int(p))}
+                    </span>
                 })
                 -> React.array
             }
-        </tbody>
-    </table>
+            <span className="page"
+                  onClick={_ => nextPage()}>
+                {React.string(">")}
+            </span>
+        </div>
+    </div>
 }
