@@ -119,6 +119,7 @@ let make = (~columns, ~data, ~pageSize, ~rowKey) => {
                         "page"
                     };
                     <span className=className
+                          key={string_of_int(p)}
                           onClick={_ => selectPage(p)}>
                         {React.string(string_of_int(p))}
                     </span>
