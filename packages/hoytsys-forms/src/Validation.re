@@ -78,7 +78,7 @@ module StringValidation {
         }
     }
 
-    let make = (~name, ~initialValue, ~required, ~minLength, ~maxLength) => {
+    let make = (~name, ~initialValue=None, ~required, ~minLength=0, ~maxLength) => {
         let valid = {
             baseValidation: {
                 validation: {
