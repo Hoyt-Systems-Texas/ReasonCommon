@@ -34,9 +34,9 @@ let getLocation = () => {
         GeoLocation.getLocation(
             GeoLocation.geoLocation,
              success => {
-            resolve(. HoytsysCore.Core.Success(GeoLocation.fromGeoLocation(success)))
+            resolve(. HoytsysCore.Core.ResultMonad.Success(GeoLocation.fromGeoLocation(success)))
         }, _ => {
-            resolve(. HoytsysCore.Core.Error([|"Unable to get the location"|]))
+            resolve(. HoytsysCore.Core.ResultMonad.Error([|"Unable to get the location"|]))
         });
     });
 };

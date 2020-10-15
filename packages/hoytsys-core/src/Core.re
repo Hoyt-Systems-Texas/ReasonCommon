@@ -1,13 +1,13 @@
 
-type resultMonad('a) = 
-    | Success('a)
-    | Error(array(string))
-    | Busy
-    | AccessDenied
-    ;
-
-module Decode = {
+module ResultMonad = {
     open Json.Decode;
+
+    type t('a) = 
+        | Success('a)
+        | Error(array(string))
+        | Busy
+        | AccessDenied
+        ;
 
     let decodeError = json => {
         let errors = json |> array(string)

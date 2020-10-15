@@ -33,4 +33,4 @@ type geoCodingResult =
     | UnknownResponse
     ;
 
-let getGeoCoding : string => address => Js.Promise.t(HoytsysCore.Core.resultMonad(geoCodingResult));
+let getGeoCoding : string => address => Js.Promise.t(HoytsysCore.Core.ResultMonad.t(geoCodingResult));

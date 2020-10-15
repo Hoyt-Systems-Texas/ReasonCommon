@@ -111,11 +111,11 @@ let getGeoCoding = (apiKey, address) => {
     Fetch.fetch(url)
         |> then_(Fetch.Response.json)
         |> then_(json => {
-            resolve(HoytsysCore.Core.Success(Decode.decodeGeoCodingResult(json)))
+            resolve(HoytsysCore.Core.ResultMonad.Success(Decode.decodeGeoCodingResult(json)))
         })
         |> catch(error => {
             Js.Console.log(error);
-            resolve(HoytsysCore.Core.Error([|"Unexpected error has occurrent while fetching the geo code"|]))
+            resolve(HoytsysCore.Core.ResultMonad.Error([|"Unexpected error has occurrent while fetching the geo code"|]))
         })
     )
 }
