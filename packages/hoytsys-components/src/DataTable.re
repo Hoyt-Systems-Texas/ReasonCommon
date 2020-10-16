@@ -41,6 +41,14 @@ module DataInfo {
   }
 }
 
+module TablePage = {
+  [@react.component]
+  let make = (~currentPage, ~numberOfPages, ~setPage) => {
+    <div className="paging">
+    </div>
+  }
+}
+
 module Make_dataTable(I: DataTableInfo) = {
   [@react.component]
   let make = (~perPage, ~data, ~columns) => {
@@ -70,6 +78,9 @@ module Make_dataTable(I: DataTableInfo) = {
       }
       None;
     }, [|data|]);
+    let setPage(page) = {
+      ()
+    };
     <div className="data-table">
       <table>
         <thead>
@@ -112,9 +123,15 @@ module Make_dataTable(I: DataTableInfo) = {
         }
         </tbody>
       </table>
-      <div className="pages">
-
-      </div>
+      {
+        switch (dataModel) {
+          | Some(d) => {
+            <TablePage currentPage=d.currentPage numberOfPages=d.numberOfPages setPage/>
+          }
+          | None => <>
+          </>
+        }
+      }
     </div>
   }
 }
