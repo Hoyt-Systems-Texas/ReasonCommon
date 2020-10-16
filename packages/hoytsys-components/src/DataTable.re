@@ -1,3 +1,5 @@
+[%bs.raw {|require("./DataTable.scss")|}];
+
 module Column = {
   type t('a) = {
     /**
@@ -44,7 +46,38 @@ module DataInfo {
 module TablePage = {
   [@react.component]
   let make = (~currentPage, ~numberOfPages, ~setPage) => {
+    let nextPage() = {
+      let nextPage = currentPage + 1;
+      if (nextPage < numberOfPages) {
+        setPage(nextPage);
+      }
+    };
+    let previousPage() = {
+      let prevPage = currentPage - 1;
+      if (prevPage >= 0) {
+        setPage(prevPage);
+      }
+    };
     <div className="paging">
+      <span className="page"
+            onClick={_ => previousPage()}>
+        <Octicons.ChevronLeft />
+      </span>
+      {
+        Belt.Array.range(1, numberOfPages)
+        -> Belt.Array.map(p => {
+          <span className="page"
+                onClick={_ => setPage(p - 1)}
+                key={string_of_int(p)}>
+            {React.string(string_of_int(p))}
+          </span>
+        })
+        -> React.array
+      }
+      <span className="page"
+            onClick={_ => nextPage()}>
+        <Octicons.ChevronRight />
+      </span>
     </div>
   }
 }
@@ -79,7 +112,17 @@ module Make_dataTable(I: DataTableInfo) = {
       None;
     }, [|data|]);
     let setPage(page) = {
-      ()
+      let start = perPage * page;
+      setDataModel(f => {
+        switch(f) {
+          | Some(f) => Some({
+            ...f,
+            currentPage: page,
+            data: Js.Array.slice(f.allData, ~start, ~end_=start + perPage),
+          })
+          | None => None
+        }
+      });
     };
     <div className="data-table">
       <table>
@@ -88,9 +131,9 @@ module Make_dataTable(I: DataTableInfo) = {
             {
               columns
               -> Belt.Array.map(column => {
-                <td key={column.Column.id}>
+                <th key={column.Column.id}>
                   {column.header}
-                </td>
+                </th>
               })
               -> React.array
             }
@@ -117,7 +160,9 @@ module Make_dataTable(I: DataTableInfo) = {
             })
             -> React.array
             | None => <tr>
-              {React.string("Loading...")}
+              <td>
+                {React.string("Loading...")}
+              </td>
             </tr>
           }
         }
