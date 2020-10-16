@@ -78,7 +78,7 @@ module StringValidation {
         }
     }
 
-    let make = (~name, ~initialValue=None, ~required, ~minLength=0, ~maxLength) => {
+    let make = (~name, ~required, ~maxLength, ~minLength=0, ~initialValue=None) => {
         let valid = {
             baseValidation: {
                 validation: {
@@ -543,7 +543,7 @@ module UrlValidation {
 module EmailValidation {
     type t = StringValidation.t;
 
-    let make = (~name, ~initialValue, ~required, ~minLength, ~maxLength) => {
+    let make = (~name, ~initialValue=None, ~required, ~minLength=0, ~maxLength) => {
         let valid = {
             StringValidation.baseValidation: {
                 validation: {
