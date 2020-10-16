@@ -6,6 +6,27 @@ type resultMonad('a) =
     | AccessDenied
     ;
 
+module FileReader = {
+    type t;
+
+    module Target = {
+        type t;
+
+        [@bs.get] external result: t => string = "result";
+    }
+
+    module Event = {
+        type t;
+
+        [@bs.get] external target: t => Target.t  = "target";
+    }
+    
+    [@bs.new] external make : unit => t = "FileReader";
+
+    [@bs.send] external readAsDataUrl: t => Webapi.File.t => unit = "readAsDataURL";
+    [@bs.set] external onload: (t, (Event.t => unit)) => unit = "onload";
+}
+
 module Decode = {
     open Json.Decode;
 

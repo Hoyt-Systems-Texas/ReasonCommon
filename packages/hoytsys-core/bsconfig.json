@@ -15,6 +15,7 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "bs-webapi",
     "@glennsl/bs-json",
     "bs-moment",
     "@glennsl/bs-jest"
