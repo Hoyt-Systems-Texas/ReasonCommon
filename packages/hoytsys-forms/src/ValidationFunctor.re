@@ -186,3 +186,12 @@ module EnumerateValidation {
     let clean(t: t('a)) = t.value;
     let make = Validation.EnumerateValueValidation.make;
 }
+
+module TimeValidation {
+    type t = Validation.TimeValidation.t;
+
+    let errors(t: t) = t.validation.errors;
+    let update(t, value) = Validation.TimeValidation.validate(t, value);
+    let clean(t: t) = t.value
+    let make = Validation.TimeValidation.make;
+}
