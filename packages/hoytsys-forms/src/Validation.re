@@ -570,11 +570,12 @@ module EmailValidation {
         let valid = StringValidation.validate(validation, value);
         let (errors, clean) = switch (valid.clean) {
             | Some(v) => {
+                let v = Js.String.toLocaleLowerCase(v);
                 if (Js.String.match(emailRegex, v) == None) {
                     (valid.baseValidation.validation.errors
                         |> List.cons("Invalid email address."), None)
                 } else {
-                    (valid.baseValidation.validation.errors, valid.clean)
+                    (valid.baseValidation.validation.errors, Some(v))
                 }
             }
             | None => (valid.baseValidation.validation.errors, valid.clean)
