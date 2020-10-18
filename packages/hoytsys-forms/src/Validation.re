@@ -24,6 +24,10 @@ module StringValidation = {
     minLength: int,
   };
 
+  let errors(t)= {
+    t.baseValidation.validation.errors
+  }
+
   let validate = (validation: t, value: string) => {
     let dirty = true;
     let clean = String.trim(value);
@@ -612,6 +616,10 @@ module EmailValidation = {
     };
     valid;
   };
+
+  let errors(t: t) = {
+    t.baseValidation.validation.errors
+  }
 
   let emailRegex = [%re
     "/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g"
