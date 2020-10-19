@@ -100,7 +100,7 @@ module PhoneNumberValidation {
     let errors = (t: Validation.PhoneNumberValidation.t) => t.baseValidation.validation.errors;
     let update = (t, value) => Validation.PhoneNumberValidation.validate(t, value);
     let fixValue = (t, value) => {
-        let digits = HoytsysCore.Core.removeNonDigits(value);
+        let digits = HoytsysCore.Core.Digits.removeNonDigits(value);
         if (Js.String.length(digits) == 10) {
             update(t, "1" ++ digits);
         } else {

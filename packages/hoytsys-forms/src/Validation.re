@@ -682,7 +682,7 @@ module TimeValidation = {
   };
 
   let validate = (validation, value) => {
-    let clean = HoytsysCore.Core.parseTimeString(value);
+    let clean = HoytsysCore.Core.DataExt.parseTimeString(value);
     let errors =
       switch (clean) {
       | Some(_) => []

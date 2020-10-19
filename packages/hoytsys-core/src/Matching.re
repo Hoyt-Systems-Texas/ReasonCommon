@@ -105,7 +105,7 @@ module MakeBasicBatch = (Item: BasicMatchInfo) => {
                                 let value = Belt.List.reduce(records, [], (matches, record) => {
                                     switch (oldRecord(record)) {
                                         | Some(value) => {
-                                            let tokenized = HoytsysCore.Core.tokenizeString(value);
+                                            let tokenized = HoytsysCore.Core.Tokenizer.tokenizeString(value);
                                             updatePotentialMatches(matches, tokenized, record);
 
                                         }
@@ -141,7 +141,7 @@ module MakeBasicBatch = (Item: BasicMatchInfo) => {
             | Word(words, getValue) => {
                 switch (getValue(unknown)) {
                     | Some(value) => {
-                        let tokens = HoytsysCore.Core.tokenizeString(value);
+                        let tokens = HoytsysCore.Core.Tokenizer.tokenizeString(value);
                         switch (tokens) {
                             | [] => []
                             | matchWords => {

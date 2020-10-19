@@ -37,19 +37,22 @@ module UpdateValue = {
 
 let emptyGuid = "00000000-0000-0000-0000-000000000000";
 
-let parseTimeString = timeString => {
-    let date = MomentRe.momentDefaultFormat("1970-1-1 " ++ timeString);
-    if (MomentRe.Moment.isValid(date)) {
-        Some(date)
-    } else {
-        None
+module DataExt {
+
+    let parseTimeString = timeString => {
+        let date = MomentRe.momentDefaultFormat("1970-1-1 " ++ timeString);
+        if (MomentRe.Moment.isValid(date)) {
+            Some(date)
+        } else {
+            None
+        }
     }
+
+    let getTotalMinutes = date => {
+        MomentRe.Moment.toUnix(date) / 60
+    };
+
 }
-
-let getTotalMinutes = date => {
-    MomentRe.Moment.toUnix(date) / 60
-};
-
 module AsyncLoadState = {
 
     type t('a) =
@@ -60,21 +63,26 @@ module AsyncLoadState = {
         ;
 };
 
+module Digits {
 
-let notADigit = [%re "/[^0-9]/g"]
+    let notADigit = [%re "/[^0-9]/g"]
 
-let removeNonDigits = (value) => {
-    Js.String.replaceByRe(notADigit, "", value);
+    let removeNonDigits = (value) => {
+        Js.String.replaceByRe(notADigit, "", value);
+    }
 }
 
-let whiteSpaceRegex = [%re "/\s+/"];
+module Tokenizer {
 
-let tokenizeString = (value) => {
-    Js.String.splitByRe(
-        whiteSpaceRegex,
-         Js.String.toLocaleLowerCase(Js.String.trim(value)))
-         -> Array.to_list
-         -> Belt.List.keepMap(a => a);
+    let whiteSpaceRegex = [%re "/\s+/"];
+
+    let tokenizeString = (value) => {
+        Js.String.splitByRe(
+            whiteSpaceRegex,
+            Js.String.toLocaleLowerCase(Js.String.trim(value)))
+            -> Array.to_list
+            -> Belt.List.keepMap(a => a);
+    }
 }
 
 module FormState = {
