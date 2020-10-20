@@ -28,8 +28,17 @@ module Make_cached_value(T: Cache_value_type) = struct
       requests= ref [];
     }
 
-  let update_with_value _ =
-    ()
+  let update_with_value t =
+    let v = match !(t.value) with 
+    | Not_loaded
+    | Loading
+    | Failed -> 
+      None
+    | Load v -> Some(v) in
+    let handlersRef = t.requests in
+    let handlers = !handlersRef in
+    handlersRef := [];
+    Belt.List.forEach handlers (fun h -> h(v))
   
   let get t =
     let value = t.value in
@@ -45,8 +54,8 @@ module Make_cached_value(T: Cache_value_type) = struct
           T.load ()
           |> then_(fun result -> 
             match result with
-            | R.Success t ->
-              value := Load t;
+            | R.Success result ->
+              value := Load result;
               update_with_value t;
               resolve()
             | _ ->
