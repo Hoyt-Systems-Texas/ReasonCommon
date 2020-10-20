@@ -222,6 +222,10 @@ module EnumerateValueValidation = {
     };
   };
 
+  let errors(t) = {
+    t.validation.errors
+  }
+
   let validate = (validation, value: option('a)) => {
     let dirty = true;
     let errors = {
