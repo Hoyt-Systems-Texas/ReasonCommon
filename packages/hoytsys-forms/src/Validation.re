@@ -28,6 +28,10 @@ module StringValidation = {
     t.baseValidation.validation.errors
   }
 
+  let value(t) = {
+    t.baseValidation.value
+  }
+
   let validate = (validation: t, value: string) => {
     let dirty = true;
     let clean = String.trim(value);
