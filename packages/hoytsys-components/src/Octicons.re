@@ -18,6 +18,24 @@ module ChevronLeft = {
     external make: (~size:int=?) => React.element = "ChevronLeftIcon";
 }
 
+module File = {
+
+    [@bs.module "@primer/octicons-react"][@react.component]
+    external make: (~size:int=?) => React.element = "FileIcon";
+}
+
+module Location = {
+
+    [@bs.module "@primer/octicons-react"][@react.component]
+    external make: (~size:int=?) => React.element = "LocationIcon";
+}
+
+module People {
+
+    [@bs.module "@primer/octicons-react"][@react.component]
+    external make: (~size:int=?) => React.element = "PeopleIcon";
+}
+
 module Person = {
 
     [@bs.module "@primer/octicons-react"][@react.component]
@@ -29,6 +47,12 @@ module Organization = {
     [@bs.module "@primer/octicons-react"][@react.component]
     external make: (~size:int=?) => React.element = "OrganizationIcon";
 };
+
+module Search = {
+
+    [@bs.module "@primer/octicons-react"][@react.component]
+    external make: (~size:int=?) => React.element = "SearchIcon";
+}
 
 module ThreeBars = {
 
