@@ -5,17 +5,23 @@ module Checklist = {
     
 }
 
-module ChevronRight = {
+module ChevronDown = {
 
     [@bs.module "@primer/octicons-react"][@react.component]
-    external make: (~size:int=?) => React.element = "ChevronRightIcon";
-    
+    external make: (~size:int=?) => React.element = "ChevronDownIcon";
 }
 
 module ChevronLeft = {
 
     [@bs.module "@primer/octicons-react"][@react.component]
     external make: (~size:int=?) => React.element = "ChevronLeftIcon";
+}
+
+module ChevronRight = {
+
+    [@bs.module "@primer/octicons-react"][@react.component]
+    external make: (~size:int=?) => React.element = "ChevronRightIcon";
+    
 }
 
 module File = {
