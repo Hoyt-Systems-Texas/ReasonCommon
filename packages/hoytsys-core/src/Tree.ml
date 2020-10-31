@@ -1,3 +1,5 @@
+let root_id = 0
+
 module type Tree_lookup = sig
   type value
 
@@ -15,28 +17,52 @@ module Make_tree(L: Tree_lookup) = struct
     values: L.value Belt.HashMap.Int.t;
   }
 
+  let get_parent_id value =
+    match L.get_parent value with
+    | Some parent_id -> parent_id
+    | None -> root_id
+
+  let add_child map lookup parent_id value =
+    let module H = Belt.HashMap.Int in
+    let key = L.get_key value in
+    let add_child () =
+      match H.get lookup parent_id with 
+      | Some v -> 
+        H.set lookup parent_id @@ value::v
+      | None ->
+        H.set lookup parent_id [value] in
+    match H.get map key with 
+    | Some v -> (
+      let old_parent_id = get_parent_id v in
+      if old_parent_id = parent_id then
+        (
+          match H.get lookup parent_id with
+          | Some v ->
+            H.set lookup parent_id @@ List.map (fun n -> if L.get_key value = L.get_key n then
+              value else n) v
+          | None ->
+            H.set lookup parent_id [value]
+        )
+      else 
+        match H.get lookup old_parent_id with
+        | Some v ->
+          H.set lookup parent_id @@ List.filter (fun n -> not (L.get_key value = L.get_key n)) v;
+        | None -> add_child ()
+    ) 
+    | None -> add_child ()
+
   let make values =
     let module H = Belt.HashMap.Int in
-    let map = H.make ~hintSize:20 in
-    let lookup = List.fold_left (fun map value ->
-      match L.get_parent value with
-      | Some parent -> (
-        match H.get map parent with
-        | Some v ->
-          H.set map parent @@ value::v;
-          map
-        | None ->
-          H.set map parent [value];
-          map)
-      | None -> map) map @@ List.rev values in
+    let lookup = H.make ~hintSize:20 in
     let map = H.make ~hintSize:50 in
-    let values = List.fold_left (fun map value ->
-      let key = L.get_key value in
-      H.set map key value;
-      map) map values in
+    List.iter (fun value ->
+      add_child map lookup (match L.get_parent value with
+      | Some parent_id -> parent_id
+      | None -> root_id)
+      value) values;
     {
       lookup;
-      values;
+      values = map;
     }
   
   let get t key =
@@ -47,4 +73,20 @@ module Make_tree(L: Tree_lookup) = struct
     Belt.HashMap.Int.get t.lookup key
     |. Belt.Option.getWithDefault []
 
+  let add_or_update t value =
+    add_child t.values t.lookup (match L.get_parent value with
+    | Some parent_id -> parent_id
+    | None -> root_id) value
+
+  let remove t key =
+    let module H = Belt.HashMap.Int in
+    match H.get t.values key with
+    | Some node ->
+      H.remove t.values key;
+      let parent_id = get_parent_id node in
+      (match H.get t.lookup parent_id with 
+      | Some v ->
+        H.set t.lookup parent_id @@ List.filter (fun v -> L.get_parent v = L.get_parent node) v
+      | None -> ())
+    | None -> ()
 end

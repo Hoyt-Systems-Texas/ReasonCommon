@@ -19,4 +19,9 @@ module Make_tree(L: Tree_lookup) : sig
 
   val children : t -> int -> L.value list
   (** Used to get the children of the node. *)
+
+  val add_or_update : t -> L.value -> unit
+
+  val remove : t -> int -> unit
+  (** Removes with the specifeid [key].*)
 end 
