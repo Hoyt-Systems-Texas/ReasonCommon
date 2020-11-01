@@ -31,9 +31,12 @@ module Make_tree(L: Tree_lookup) = struct
         H.set lookup parent_id @@ value::v
       | None ->
         H.set lookup parent_id [value] in
+    let update_lookup () =
+      H.set map (L.get_key value) value in 
     match H.get map key with 
     | Some v -> (
       let old_parent_id = get_parent_id v in
+      update_lookup ();
       if old_parent_id = parent_id then
         (
           match H.get lookup parent_id with
@@ -44,12 +47,15 @@ module Make_tree(L: Tree_lookup) = struct
             H.set lookup parent_id [value]
         )
       else 
+        update_lookup ();
         match H.get lookup old_parent_id with
         | Some v ->
           H.set lookup parent_id @@ List.filter (fun n -> not (L.get_key value = L.get_key n)) v;
         | None -> add_child ()
     ) 
-    | None -> add_child ()
+    | None -> 
+      update_lookup ();
+      add_child ()
 
   let make values =
     let module H = Belt.HashMap.Int in
