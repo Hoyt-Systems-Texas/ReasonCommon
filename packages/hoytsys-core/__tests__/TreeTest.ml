@@ -56,5 +56,10 @@ let () =
     test "Get second child test" @@ (fun () ->
       let result = Test_tree.children tree_lookup 2 in
       let total = List.length result in
-      expect total |> toBe 2)
+      expect total |> toBe 2);
 
+    test "Remove node test" @@ (fun () ->
+      Test_tree.remove tree_lookup 4;
+      let result = Test_tree.children tree_lookup 2 in
+      let total = List.length result in
+      expect total |> toBe 1)

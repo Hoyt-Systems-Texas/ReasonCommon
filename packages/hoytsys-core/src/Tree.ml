@@ -92,7 +92,7 @@ module Make_tree(L: Tree_lookup) = struct
       let parent_id = get_parent_id node in
       (match H.get t.lookup parent_id with 
       | Some v ->
-        H.set t.lookup parent_id @@ List.filter (fun v -> L.get_parent v = L.get_parent node) v
+        H.set t.lookup parent_id @@ List.filter (fun v -> L.get_key v = key) v
       | None -> ())
     | None -> ()
 end
