@@ -24,13 +24,14 @@ let make = (~tabs) => {
       // Build an array of the tabs.
       let renderHeader(index, tab) = {
         if (index == selected) {
-          <li className="active">
+          <li className="active"
+              key={string_of_int(index)}>
             {
               tab.TabPanel.header
             }
           </li>
         } else {
-          <li onClick={_ => setSelected(_ => index)}>
+          <li key={string_of_int(index)} onClick={_ => setSelected(_ => index)}>
             {
               tab.TabPanel.header
             }

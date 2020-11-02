@@ -38,20 +38,21 @@ module Make_tree(L: Tree_lookup) = struct
       let old_parent_id = get_parent_id v in
       update_lookup ();
       if old_parent_id = parent_id then
-        (
-          match H.get lookup parent_id with
+          (
+            match H.get lookup parent_id with
           | Some v ->
-            H.set lookup parent_id @@ List.map (fun n -> if L.get_key value = L.get_key n then
-              value else n) v
+            let values = List.map (fun n -> if L.get_key value = L.get_key n then
+              value else n) v in
+            H.set lookup parent_id values 
           | None ->
-            H.set lookup parent_id [value]
-        )
+            H.set lookup parent_id [value])
       else 
-        update_lookup ();
+        (update_lookup ();
         match H.get lookup old_parent_id with
         | Some v ->
           H.set lookup parent_id @@ List.filter (fun n -> not (L.get_key value = L.get_key n)) v;
         | None -> add_child ()
+        )
     ) 
     | None -> 
       update_lookup ();
