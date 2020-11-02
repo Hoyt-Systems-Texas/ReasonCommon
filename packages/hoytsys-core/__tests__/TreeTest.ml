@@ -58,6 +58,11 @@ let () =
       let result = List.length children in
       expect result |> toBe 1);
 
+    test "Get root children" (fun () ->
+      let children = Test_tree.root_children tree_lookup in
+      let result = List.length children in
+      expect result |> toBe 1);
+
     test "Get root node test" @@ (fun () ->
       let result = Test_tree.get tree_lookup 1 in
       let key = Core.OptionExt.map result @@ fun v -> v.key in

@@ -98,4 +98,8 @@ module Make_tree(L: Tree_lookup) = struct
             | None -> [])
       | None -> ())
     | None -> ()
+  
+  let root_children t =
+    children t root_id
+
 end

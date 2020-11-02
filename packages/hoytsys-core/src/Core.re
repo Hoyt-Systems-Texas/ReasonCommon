@@ -25,16 +25,17 @@ module ResultMonad = {
 
     let decodeEmptyResult = json => decodeResultMonad(json, (_) => ());
 
-    let bind(t, f) = {
+    let bind(f, t) = {
         switch (t) {
             | Success (a) => f(a)
-            | _ => t
+            | Error(s) => Error(s)
+            | Busy => Busy
+            | AccessDenied => AccessDenied
         }
     }
 
-    let error(t, f) = {
+    let error(f, t) = {
         switch (t) {
-            | Success(_) => t
             | Error(s) => f(s)
             | _ => t
         }
