@@ -40,6 +40,16 @@ let () =
       parent=Some 2;
       value="Other 4"
     };
+    {
+      key=5;
+      parent=Some 4;
+      value="Other 5"
+    };
+    {
+      key=6;
+      parent=Some 4;
+      value="Other 6"
+    };
   ] in
   describe "Simple tree lookup." @@ fun _ -> 
     let tree_lookup = Test_tree.make value in
@@ -62,4 +72,4 @@ let () =
       Test_tree.remove tree_lookup 4;
       let result = Test_tree.children tree_lookup 2 in
       let total = List.length result in
-      expect total |> toBe 1)
+      expect total |> toBe 3)

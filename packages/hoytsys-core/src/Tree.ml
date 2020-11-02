@@ -93,6 +93,9 @@ module Make_tree(L: Tree_lookup) = struct
       (match H.get t.lookup parent_id with 
       | Some v ->
         H.set t.lookup parent_id @@ List.filter (fun v -> L.get_key v = key) v
+          @ (match H.get t.lookup key with
+            | Some v -> v
+            | None -> [])
       | None -> ())
     | None -> ()
 end
