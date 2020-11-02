@@ -24,6 +24,21 @@ module ResultMonad = {
     }
 
     let decodeEmptyResult = json => decodeResultMonad(json, (_) => ());
+
+    let bind(t, f) = {
+        switch (t) {
+            | Success (a) => f(a)
+            | _ => t
+        }
+    }
+
+    let error(t, f) = {
+        switch (t) {
+            | Success(_) => t
+            | Error(s) => f(s)
+            | _ => t
+        }
+    }
 }
 
 module UpdateValue = {
