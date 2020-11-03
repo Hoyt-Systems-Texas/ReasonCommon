@@ -1,0 +1,37 @@
+.dialog {
+  display: none;
+  &.show {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    background-color: rgba(202,201,201, 0.7);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+  > .popup {
+    display: block;
+    background-color: white;
+    width: 60%;
+    opacity: 1;
+    padding: 1em;
+    border-radius: 1em;
+    margin: 2.5em auto;
+    > .dialog-header {
+      font-size: 2em;
+      font-weight: bold;
+      margin-left: 2em;
+    }
+    > .body {
+      margin: .25em 0;
+    }
+    > .btn-bar {
+      margin: .25em;
+      text-align: right;
+      > button {
+        font-size: 1.25em;
+      }
+    }
+  }
+}
