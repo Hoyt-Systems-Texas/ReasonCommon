@@ -205,7 +205,11 @@ module PostalCodeValidation = {
         },
       },
     };
-  };
+  }
+
+  let errors(t) = {
+    t.baseValidation.validation.errors
+  }
 };
 
 module EnumerateValueValidation = {
@@ -252,6 +256,7 @@ module EnumerateValueValidation = {
       value,
     };
   };
+
 };
 
 module FloatValidation = {
