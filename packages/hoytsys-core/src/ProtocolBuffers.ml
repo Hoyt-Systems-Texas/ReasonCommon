@@ -8,3 +8,9 @@ let empty_string s =
   match s with
   | Some s -> s
   | None -> ""
+
+let nullable_int i =
+  if i = 0 then
+    None
+  else
+    Some i
