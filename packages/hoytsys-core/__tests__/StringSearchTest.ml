@@ -9,13 +9,17 @@ type test_value = {
 module Test_value_search_type = struct
   type t = test_value
 
-  let get_text t =
-    [t.words]
+  let get_text t = t.words
 
   let tokenize ~func ~acc s =
     let words = HoytsysCore.Core.Tokenizer.tokenizeString s in
-    Belt.List.reduce words acc func
+    Belt.List.reduceWithIndex words acc func
 
 end
 
 module Test_value_search = HoytsysCore.StringSearch.Make_string_search(Test_value_search_type)
+
+let () =
+  describe "String search test" @@ fun _ ->
+    test "hello world!" (fun () ->
+      expect "true" |> toBe "true")
