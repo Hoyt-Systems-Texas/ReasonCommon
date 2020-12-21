@@ -28,6 +28,8 @@ module Make_string_search(S: String_search_type) = struct
     (** The word text. *)
     word: string;
 
+    word_length: int;
+
     (** The documents containing the word. A word can be in the same contents multiple times. *)
     documents_word: word_position Belt.HashMap.Int.t;
   }
@@ -35,6 +37,12 @@ module Make_string_search(S: String_search_type) = struct
   type t = {
     (** The words we are searching for.  The array needs to be sorted and will be used for a binary search. *)
     words: word array;
+
+    (** The total number of words in the array. *)
+    number_of_words: int;
+
+    (** The middle of the words. *)
+    middle: int;
 
     (** The documents we are matching on. Going to index the documents based on their position. *)
     documents: S.t array;
@@ -67,6 +75,7 @@ module Make_string_search(S: String_search_type) = struct
           | None -> 
             let document = {
               word;
+              word_length=String.length word;
               documents_word=I_map.make ~hintSize:3;
             } in 
             I_map.set document.documents_word document_id word_pos;
@@ -77,10 +86,59 @@ module Make_string_search(S: String_search_type) = struct
     let module S_map = Belt.HashMap.String in
     let word_documents = tokenize_documents documents in
     let words = S_map.valuesToArray word_documents in
+    let middle = Array.length words / 2 in
     Array.sort (fun d1 d2 -> String.compare d1.word d2.word) words;
     {
       words;
       documents;
+      number_of_words=Array.length words;
+      middle;
     }
+
+  let search word t =
+    let word_length = String.length word in
+    let rec search_bin idx start end_ =
+      let documents = Array.get t.words idx in
+      let num = String.compare documents.word word in
+      if num = 0 then
+        Some idx
+      else if num < 0 then
+        (if word_length > documents.word_length then
+          let half = (start + idx) / 2 in
+          if idx = half then
+            let substring = String.sub documents.word 0 word_length in
+            if substring = word then
+              Some idx 
+            else 
+              None
+          else
+            search_bin half start idx
+        else
+          let half = (start + idx) / 2 in
+          if half = idx then
+            None
+          else 
+            search_bin half start idx)
+      else
+        if word_length > documents.word_length then
+          if end_ = idx then
+            let substring = String.sub documents.word 0 word_length in
+            if substring = word then
+              Some idx
+            else
+              None
+          else 
+            let total = end_ + idx in
+            let half = (total / 2) + total mod 2 in
+            search_bin half idx end_
+        else
+          if end_ = idx then
+            None
+          else
+            let total = end_ + idx in
+            let half = (total / 2 ) + total mod 2 in
+            search_bin half idx end_
+        in
+    search_bin t.middle
 
 end
