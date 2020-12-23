@@ -81,6 +81,7 @@ module Make_string_search(S: String_search_type) = struct
               documents_word=I_map.make ~hintSize:3;
             } in 
             I_map.set document.documents_word document_id word_pos;
+            S_map.set words_map word document;
           );
           words_map))
 
@@ -102,12 +103,12 @@ module Make_string_search(S: String_search_type) = struct
     let word_length = String.length word in
     let rec search_bin idx start end_ =
       let documents = Array.get t.words idx in
-      let num = String.compare documents.word word in
+      let num = String.compare word documents.word in
       if num = 0 then
         Some idx
       else if num < 0 then
         if word_length > documents.word_length then
-          let half = (start + idx) / 2 in
+          let half = ((idx - start) / 2) + start in
           if idx = half then
             let substring = String.sub documents.word 0 word_length in
             if substring = word then
@@ -117,7 +118,7 @@ module Make_string_search(S: String_search_type) = struct
           else
             search_bin half start idx
         else
-          let half = (start + idx) / 2 in
+          let half = (idx - start) / 2 + start in
           if half = idx then
             None
           else 
@@ -131,18 +132,18 @@ module Make_string_search(S: String_search_type) = struct
             else
               None
           else 
-            let total = end_ + idx in
-            let half = (total / 2) + total mod 2 in
+            let offset = end_ - idx in
+            let half = (offset / 2) + idx + offset mod 2 in
             search_bin half idx end_
         else
           if end_ = idx then
             None
           else
             let total = end_ + idx in
-            let half = (total / 2 ) + total mod 2 in
+            let half = (total / 2 ) in
             search_bin half idx end_
         in
-    search_bin t.middle 0 t.number_of_words
+    search_bin t.middle 0 (t.number_of_words - 1)
 
   let search text t =
     let module I_map = Belt.HashMap.Int in
@@ -155,7 +156,8 @@ module Make_string_search(S: String_search_type) = struct
     if Belt.List.some idx (fun (_, id) -> id = None) then
       []
     else 
-      let rec find_words documents idx =
+      (** Use none for the documents. *)
+      (let rec find_words documents idx =
         match idx with
         | head::tail -> 
           let (word, start_idx) = head in
@@ -167,12 +169,14 @@ module Make_string_search(S: String_search_type) = struct
                   let d = word_docs.documents_word in
                   let next_words = match documents with
                   | Some current_matches -> 
+                    (** Create a copy of the map. *)
+                    let current_matches = I_map.copy current_matches in
                     I_map.forEach current_matches (fun id _ ->
                       if I_map.has d id then
                         ()
                       else
                         I_map.remove d id);
-                    current_matches
+                    find_words (Some current_matches) tail
                   | None -> I_map.copy d in
                     find_words (Some next_words) tail
                 else
@@ -181,8 +185,18 @@ module Make_string_search(S: String_search_type) = struct
                 I_map.make ~hintSize:0)
           in
           dec_match start_idx documents
-        | [] -> I_map.make ~hintSize:0
+        | [] -> match documents with
+          | Some documents -> documents
+          | None -> I_map.make ~hintSize:0
       in
-      []
+      let words = Belt.List.keepMap idx (fun (word, id) -> 
+        match id with
+        | Some id -> Some (word, id)
+        | None -> None) in
+      let result = find_words None words in
+      result
+      |. I_map.valuesToArray
+      |. Belt.Array.keepMap (fun p -> Belt.Array.get t.documents p.document)
+      |. Array.to_list)
 
 end
