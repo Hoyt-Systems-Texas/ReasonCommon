@@ -46,4 +46,9 @@ let () =
     test "world" (fun () ->
       let string_search = Test_value_search.make documents in
       let result = Test_value_search.search "world" string_search in
-      expect (Belt.List.length result) |> toBe 2)
+      expect (Belt.List.length result) |> toBe 2);
+
+    test "text world" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "hello world" string_search in
+      expect (Belt.List.length result) |> toBe 1);
