@@ -98,6 +98,14 @@ module Make_string_search(S: String_search_type) = struct
       middle;
     }
 
+  let next_high idx start end_ =
+    let offset = end_ - idx in
+    (offset / 2) + idx + offset mod 2
+
+  let next_low idx start end_ =
+    let offset = idx - start in
+    (offset / 2) + start + offset mod 2
+
   (** Finds the starting point for the search using binary search. *)
   let find_match_start word t =
     let word_length = String.length word in
@@ -107,8 +115,8 @@ module Make_string_search(S: String_search_type) = struct
       if num = 0 then
         Some idx
       else if num < 0 then
-        if word_length > documents.word_length then
-          let half = ((idx - start) / 2) + start in
+        if word_length < documents.word_length then
+          let half = next_low idx start end_ in
           if idx = half then
             let substring = String.sub documents.word 0 word_length in
             if substring = word then
@@ -118,13 +126,13 @@ module Make_string_search(S: String_search_type) = struct
           else
             search_bin half start idx
         else
-          let half = (idx - start) / 2 + start in
+          let half = next_low idx start end_ in
           if half = idx then
             None
           else 
             search_bin half start idx
       else
-        if word_length > documents.word_length then
+        if word_length < documents.word_length then
           if end_ = idx then
             let substring = String.sub documents.word 0 word_length in
             if substring = word then
@@ -132,15 +140,13 @@ module Make_string_search(S: String_search_type) = struct
             else
               None
           else 
-            let offset = end_ - idx in
-            let half = (offset / 2) + idx + offset mod 2 in
+            let half = next_high idx start end_ in
             search_bin half idx end_
         else
           if end_ = idx then
             None
           else
-            let total = end_ + idx in
-            let half = (total / 2 ) in
+            let half = next_high idx start end_ in
             search_bin half idx end_
         in
     search_bin t.middle 0 (t.number_of_words - 1)

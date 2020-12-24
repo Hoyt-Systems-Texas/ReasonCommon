@@ -43,12 +43,43 @@ let () =
       | None -> failwith "Document didn't match";
     );
 
-    test "world" (fun () ->
+    test "He" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "he" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
+    test "me" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "me" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
+    test "other" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "other" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
+    test "text" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "text" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
+    test "Something" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "something" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
+    test "Something" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "some" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
+    test "World" (fun () ->
       let string_search = Test_value_search.make documents in
       let result = Test_value_search.search "world" string_search in
       expect (Belt.List.length result) |> toBe 2);
 
-    test "text world" (fun () ->
+    test "World" (fun () ->
       let string_search = Test_value_search.make documents in
-      let result = Test_value_search.search "hello world" string_search in
-      expect (Belt.List.length result) |> toBe 1);
+      let result = Test_value_search.search "wor" string_search in
+      expect (Belt.List.length result) |> toBe 2);
+
