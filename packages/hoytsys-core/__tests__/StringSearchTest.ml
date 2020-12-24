@@ -58,14 +58,29 @@ let () =
       let result = Test_value_search.search "other" string_search in
       expect (Belt.List.length result) |> toBe 1);
 
+    test "oth" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "oth" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
     test "text" (fun () ->
       let string_search = Test_value_search.make documents in
       let result = Test_value_search.search "text" string_search in
       expect (Belt.List.length result) |> toBe 1);
 
+    test "te" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "te" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
     test "Something" (fun () ->
       let string_search = Test_value_search.make documents in
       let result = Test_value_search.search "something" string_search in
+      expect (Belt.List.length result) |> toBe 1);
+
+    test "Som" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "som" string_search in
       expect (Belt.List.length result) |> toBe 1);
 
     test "Something" (fun () ->
