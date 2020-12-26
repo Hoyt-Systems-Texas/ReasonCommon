@@ -104,7 +104,7 @@ module Make_string_search(S: String_search_type) = struct
 
   let next_low idx start end_ =
     let offset = idx - start in
-    (offset / 2) + start + offset mod 2
+    (offset / 2) + start
 
   (** Finds the starting point for the search using binary search. *)
   let find_match_start word t =
@@ -116,93 +116,101 @@ module Make_string_search(S: String_search_type) = struct
         Some idx
       else if num < 0 then
         if word_length < documents.word_length then
+          let substring = String.sub documents.word 0 word_length in
           let half = next_low idx start end_ in
           if idx = half then
-            let substring = String.sub documents.word 0 word_length in
             if substring = word then
               Some idx 
             else 
               None
           else
-            search_bin half start idx
+            if substring = word then
+              search_bin half start idx
+            else
+              search_bin half start (idx - 1)
         else
           let half = next_low idx start end_ in
           if half = idx then
             None
           else 
-            search_bin half start idx
+            search_bin half start (idx - 1)
       else
         if word_length < documents.word_length then
+          let substring = String.sub documents.word 0 word_length in
           if end_ = idx then
-            let substring = String.sub documents.word 0 word_length in
             if substring = word then
               Some idx
             else
               None
           else 
             let half = next_high idx start end_ in
-            search_bin half idx end_
+            if substring = word then
+              search_bin half idx end_
+            else
+              search_bin half (idx + 1) end_
         else
           if end_ = idx then
             None
           else
             let half = next_high idx start end_ in
-            search_bin half idx end_
+            search_bin half (idx + 1) end_
         in
     search_bin t.middle 0 (t.number_of_words - 1)
 
   let search text t =
     let module I_map = Belt.HashMap.Int in
-    let words = S.tokenize ~func:(fun words word _ -> word::words) ~acc:[] text
-      |> Belt.List.reverse
-    in
-    (** The potential matching documents. *)
-    let idx = Belt.List.map words (fun word -> (word, find_match_start word t)) in
-    (** Check to see if any of them are None and if they are stop. *)
-    if Belt.List.some idx (fun (_, id) -> id = None) then
-      []
+    if String.length text = 0 then
+      t.documents
     else 
-      (** Use none for the documents. *)
-      (let rec find_words documents idx =
-        match idx with
-        | head::tail -> 
-          let (word, start_idx) = head in
-          let text_length = String.length word in
-          let rec dec_match idx documents =
-            (match Belt.Array.get t.words idx with
-              | Some word_docs ->
-                if word_docs.word_length >= text_length then
-                  let d = word_docs.documents_word in
-                  let next_words = match documents with
-                  | Some current_matches -> 
-                    (** Create a copy of the map. *)
-                    let current_matches = I_map.copy current_matches in
-                    I_map.forEach current_matches (fun id _ ->
-                      if I_map.has d id then
-                        ()
-                      else
-                        I_map.remove d id);
-                    find_words (Some current_matches) tail
-                  | None -> I_map.copy d in
-                    find_words (Some next_words) tail
-                else
-                  I_map.make ~hintSize:0
-              | None ->
-                I_map.make ~hintSize:0)
-          in
-          dec_match start_idx documents
-        | [] -> match documents with
-          | Some documents -> documents
-          | None -> I_map.make ~hintSize:0
+      let words = S.tokenize ~func:(fun words word _ -> word::words) ~acc:[] text
+        |> Belt.List.reverse
       in
-      let words = Belt.List.keepMap idx (fun (word, id) -> 
-        match id with
-        | Some id -> Some (word, id)
-        | None -> None) in
-      let result = find_words None words in
-      result
-      |. I_map.valuesToArray
-      |. Belt.Array.keepMap (fun p -> Belt.Array.get t.documents p.document)
-      |. Array.to_list)
+      (** The potential matching documents. *)
+      let idx = Belt.List.map words (fun word -> (word, find_match_start word t)) in
+      (** Check to see if any of them are None and if they are stop. *)
+      if Belt.List.some idx (fun (_, id) -> id = None) then
+        [||]
+      else 
+        (** Use none for the documents. *)
+        (let rec find_words documents idx =
+          match idx with
+          | head::tail -> 
+            let (word, start_idx) = head in
+            let text_length = String.length word in
+            let dec_match idx documents =
+              (match Belt.Array.get t.words idx with
+                | Some word_docs ->
+                  if word_docs.word_length >= text_length then
+                    let d = word_docs.documents_word in
+                    let next_words = match documents with
+                    | Some current_matches -> 
+                      (** Create a copy of the map. *)
+                      let current_matches = I_map.copy current_matches in
+                      I_map.forEach current_matches (fun id _ ->
+                        if I_map.has d id then
+                          ()
+                        else
+                          I_map.remove current_matches id);
+                      find_words (Some current_matches) tail
+                    | None -> I_map.copy d in
+                      find_words (Some next_words) tail
+                  else
+                    I_map.make ~hintSize:0
+                | None ->
+                  I_map.make ~hintSize:0)
+            in
+            dec_match start_idx documents
+          | [] -> match documents with
+            | Some documents -> documents
+            | None -> I_map.make ~hintSize:0
+        in
+        let words = Belt.List.keepMap idx (fun (word, id) -> 
+          match id with
+          | Some id -> Some (word, id)
+          | None -> None) in
+        let result = find_words None words in
+        result
+        |. I_map.valuesToArray
+        |. Belt.Array.keepMap (fun p -> Belt.Array.get t.documents p.document))
 
 end

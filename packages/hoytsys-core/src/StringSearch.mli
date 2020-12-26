@@ -20,6 +20,6 @@ module Make_string_search(S: String_search_type): sig
   (** Makes a new string search. *)
   val make: S.t array -> t
 
-  val search: string -> t -> S.t list
+  val search: string -> t -> S.t array
 
 end
