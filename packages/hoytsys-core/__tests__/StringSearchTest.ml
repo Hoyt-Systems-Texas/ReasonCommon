@@ -98,3 +98,8 @@ let () =
       let result = Test_value_search.search "wor" string_search in
       expect (Belt.Array.length result) |> toBe 2);
 
+    test "Wor text" (fun () ->
+      let string_search = Test_value_search.make documents in
+      let result = Test_value_search.search "wor text" string_search in
+      expect (Belt.Array.length result) |> toBe 1);
+
