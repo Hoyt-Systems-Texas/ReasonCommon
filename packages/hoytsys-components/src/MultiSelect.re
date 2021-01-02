@@ -46,7 +46,7 @@ module Make_MultiSelect(M: MultiSelectType) = {
   [@react.component]
   let make = (~options) => {
     let (searchText, setSearchText) = React.useState(_ => "");
-    let (selected, setSelected) = React.useState(_ => Belt.Set.String.empty);
+    let (selected, setSelected) = React.useState(_ => None);
     let (stringSearch, setStringSearch) = React.useState(_ => None);
     let (searchResult, setSearchResults) = React.useState(_ => options);
     let (hasFocus, setHasFocus) = React.useState(_ => false);
@@ -67,8 +67,12 @@ module Make_MultiSelect(M: MultiSelectType) = {
         | None => ()
       };
     };
-    let onSelected() = {
-
+    let setCurrentId(id) = {
+      setSelected(_ => id);
+      setHasFocus(_ => false);
+    };
+    let onSelected(data) = {
+      setCurrentId(Some(M.getId(data)));
     };
     <div className="multi-select">
       <input type_="text"
@@ -88,7 +92,7 @@ module Make_MultiSelect(M: MultiSelectType) = {
         {
           searchResult
           -> Belt.Array.map((data) => {
-            <div className="option">
+            <div className="option" onClick={_ => onSelected(data)}>
               {React.string(M.displayText(data))}
             </div>
             })
