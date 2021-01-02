@@ -14,6 +14,8 @@ module type MultiSelectType = {
   // A string representation of the date.
   let getId: t => identifier;
 
+  // The id for the identifier.
+  let module Identifier_compare: Belt.Id.Comparable with type t = (identifier, identifier);
 }
 
 module Make_MultiSelect(M: MultiSelectType) = {
@@ -50,6 +52,8 @@ module Make_MultiSelect(M: MultiSelectType) = {
     let (stringSearch, setStringSearch) = React.useState(_ => None);
     let (searchResult, setSearchResults) = React.useState(_ => options);
     let (hasFocus, setHasFocus) = React.useState(_ => false);
+
+    let hashSet = Belt.Set.make(~id=(module M.Identifier_compare));
 
     React.useEffect1(_ => {
       let search = StringString.make(options);
@@ -92,7 +96,7 @@ module Make_MultiSelect(M: MultiSelectType) = {
         {
           searchResult
           -> Belt.Array.map((data) => {
-            <div className="option" onClick={_ => onSelected(data)}>
+            <div className="option" onClick={_ => onSelected(data)} key={M.displayText(data)}>
               {React.string(M.displayText(data))}
             </div>
             })
