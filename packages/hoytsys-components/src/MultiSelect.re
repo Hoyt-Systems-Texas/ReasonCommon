@@ -15,7 +15,7 @@ module type MultiSelectType = {
   let getId: t => identifier;
 
   // The id for the identifier.
-  let module Identifier_compare: Belt.Id.Comparable with type t = (identifier, identifier);
+  let module Identifier_compare: Belt.Id.Comparable with type t = identifier;
 }
 
 module Make_MultiSelect(M: MultiSelectType) = {
@@ -31,8 +31,7 @@ module Make_MultiSelect(M: MultiSelectType) = {
 
       React.useEffect1(_ => {
         setText(_ => M.displayText(tag));
-        setCurrentTag(_ => tag);
-        None;
+        setCurrentTag(_ => tag); None;
        }, [|tag|]);
 
       <span className="select-pill">
@@ -48,12 +47,10 @@ module Make_MultiSelect(M: MultiSelectType) = {
   [@react.component]
   let make = (~options) => {
     let (searchText, setSearchText) = React.useState(_ => "");
-    let (selected, setSelected) = React.useState(_ => None);
+    let (selected, setSelected) = React.useState(_ => Belt.Map.make(~id=(module M.Identifier_compare)));
     let (stringSearch, setStringSearch) = React.useState(_ => None);
     let (searchResult, setSearchResults) = React.useState(_ => options);
     let (hasFocus, setHasFocus) = React.useState(_ => false);
-
-    let hashSet = Belt.Set.make(~id=(module M.Identifier_compare));
 
     React.useEffect1(_ => {
       let search = StringString.make(options);
@@ -71,12 +68,17 @@ module Make_MultiSelect(M: MultiSelectType) = {
         | None => ()
       };
     };
-    let setCurrentId(id) = {
-      setSelected(_ => id);
-      setHasFocus(_ => false);
+    let setCurrentId(data) = {
+      let id = M.getId(data);
+      setSelected(map => Belt.Map.set(map, id, data));
     };
-    let onSelected(data) = {
-      setCurrentId(Some(M.getId(data)));
+    let toggle(data) = {
+      let id = M.getId(data);
+      if (Belt.Map.has(selected, id)) {
+        setSelected(map => Belt.Map.remove(map, id));
+      } else {
+        setSelected(map => Belt.Map.set(map, id, data));
+      }
     };
     <div className="multi-select">
       <input type_="text"
@@ -96,9 +98,16 @@ module Make_MultiSelect(M: MultiSelectType) = {
         {
           searchResult
           -> Belt.Array.map((data) => {
-            <div className="option" onClick={_ => onSelected(data)} key={M.displayText(data)}>
+            let id = M.getId(data);
+            Js.Console.log(id);
+            let selected = Belt.Map.has(selected, id);
+            Js.Console.log(selected);
+            <label className="option" key={M.displayText(data)}>
+              <input type_="checkbox"
+                     checked=selected
+                     onClick={_ => toggle(data)} />
               {React.string(M.displayText(data))}
-            </div>
+            </label>
             })
           -> React.array
         }
