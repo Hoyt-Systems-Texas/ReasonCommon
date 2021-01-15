@@ -24,16 +24,20 @@ module StringValidation = {
     minLength: int,
   };
 
-  let errors(t)= {
+  let errors(t: t) = {
     t.baseValidation.validation.errors
   }
 
-  let value(t) = {
+  let value(t: t) = {
     t.baseValidation.value
   }
 
-  let validation(t) = {
+  let validation(t: t) = {
     t.baseValidation.validation
+  }
+
+  let clean(t: t) = {
+    t.clean
   }
 
   let validate = (validation: t, value: string) => {
@@ -222,6 +226,10 @@ module PostalCodeValidation = {
   let value(t) = {
     t.baseValidation.value
   }
+
+  let clean(t: t) = {
+    t.clean
+  }
 };
 
 module EnumerateValueValidation = {
@@ -242,15 +250,19 @@ module EnumerateValueValidation = {
     };
   };
 
-  let errors(t) = {
+  let errors(t: t('a)) = {
     t.validation.errors
   }
 
-  let value(t) = {
+  let value(t: t('a)) = {
     t.value
   }
 
-  let validation(t) = {
+  let clean(t: t('a)) = {
+    t.value
+  }
+
+  let validation(t: t('a)) = {
     t.validation
   }
 
@@ -294,12 +306,20 @@ module FloatValidation = {
     };
   };
 
-  let value(t) = {
-    t.value
+  let value(t: t) = {
+    t.baseValidation.value
   }
 
-  let validation(t) = {
-    t.validation
+  let validation(t: t) = {
+    t.baseValidation.validation
+  }
+
+  let clean(t: t) = {
+    t.clean
+  }
+
+  let errors(t: t) = {
+    t.baseValidation.validation.errors
   }
 
   let validate = (validation, value) => {
@@ -396,8 +416,16 @@ module PhoneNumberValidation = {
     t.baseValidation.validation
   }
 
-  let value(t) = {
+  let value(t: t) = {
     t.baseValidation.value
+  }
+
+  let clean(t: t) = {
+    t.clean
+  }
+
+  let errors(t: t) = {
+    t.baseValidation.validation.errors
   }
 
   let validate = (validation, value) => {
@@ -483,6 +511,14 @@ module IntValidation = {
 
   let validation(t) = {
     t.baseValidation.validation
+  }
+
+  let clean(t) = {
+    t.clean
+  }
+
+  let errors(t: t) = {
+    t.baseValidation.validation.errors
   }
 
   let toString = (value: option(int)) => {
@@ -581,6 +617,22 @@ module IntValidation = {
 module UrlValidation = {
   type t = StringValidation.t;
 
+  let value(t: t) = {
+    t.baseValidation.value
+  }
+
+  let validation(t: t) = {
+    t.baseValidation.validation
+  }
+
+  let clean(t: t) = {
+    t.clean
+  }
+
+  let errors(t: t) = {
+    t.baseValidation.validation.errors
+  }
+
   let make = (~name, ~initialValue, ~required, ~minLength, ~maxLength) => {
     let valid = {
       StringValidation.baseValidation: {
@@ -652,6 +704,18 @@ module UrlValidation = {
 module EmailValidation = {
   type t = StringValidation.t;
 
+  let validation(t: t) = {
+    t.baseValidation.validation
+  }
+
+  let value(t: t) = {
+    t.baseValidation.value
+  }
+
+  let clean(t: t) = {
+    t.clean
+  }
+
   let make = (~name, ~initialValue=None, ~required, ~minLength=0, ~maxLength, ()) => {
     let valid = {
       StringValidation.baseValidation: {
@@ -720,6 +784,22 @@ module TimeValidation = {
     value: string,
     name: string,
   };
+
+  let validation(t) = {
+    t.validation
+  }
+
+  let value(t) = {
+    t.value
+  }
+
+  let cleaned(t) = {
+    t.clean
+  }
+
+  let errors(t: t) = {
+    t.validation.errors
+  }
 
   let make = (~name, ~initialValue) => {
     let date =
