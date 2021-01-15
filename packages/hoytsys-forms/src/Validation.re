@@ -32,6 +32,10 @@ module StringValidation = {
     t.baseValidation.value
   }
 
+  let validation(t) = {
+    t.baseValidation.validation
+  }
+
   let validate = (validation: t, value: string) => {
     let dirty = true;
     let clean = String.trim(value);
@@ -210,6 +214,14 @@ module PostalCodeValidation = {
   let errors(t) = {
     t.baseValidation.validation.errors
   }
+
+  let validation(t) = {
+    t.baseValidation.validation
+  }
+
+  let value(t) = {
+    t.baseValidation.value
+  }
 };
 
 module EnumerateValueValidation = {
@@ -232,6 +244,14 @@ module EnumerateValueValidation = {
 
   let errors(t) = {
     t.validation.errors
+  }
+
+  let value(t) = {
+    t.value
+  }
+
+  let validation(t) = {
+    t.validation
   }
 
   let validate = (validation, value: option('a)) => {
@@ -273,6 +293,14 @@ module FloatValidation = {
     | None => ""
     };
   };
+
+  let value(t) = {
+    t.value
+  }
+
+  let validation(t) = {
+    t.validation
+  }
 
   let validate = (validation, value) => {
     let dirty = true;
@@ -364,6 +392,14 @@ module PhoneNumberValidation = {
   };
   let allDigits = [%re "/\d+/g"];
 
+  let validation(t) = {
+    t.baseValidation.validation
+  }
+
+  let value(t) = {
+    t.baseValidation.value
+  }
+
   let validate = (validation, value) => {
     let dirty = true;
     let clean = String.trim(value);
@@ -440,6 +476,14 @@ module IntValidation = {
     max: int,
     clean: option(int),
   };
+
+  let value(t) = {
+    t.baseValidation.value
+  }
+
+  let validation(t) = {
+    t.baseValidation.validation
+  }
 
   let toString = (value: option(int)) => {
     switch (value) {
