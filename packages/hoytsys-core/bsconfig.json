@@ -17,7 +17,8 @@
   "bs-dependencies": [
     "@glennsl/bs-json",
     "bs-moment",
-    "@glennsl/bs-jest"
+    "@glennsl/bs-jest",
+    "bs-fetch"
   ],
   "warnings": {
     "error" : "+101"
