@@ -1,12 +1,14 @@
 module TabPanel = {
 
   type t = {
+    tabId: string,
     header: React.element,
     tab: React.element
   }
 
-  let make(header, tab) = {
+  let make(header, tab, ~tabId="") = {
     {
+      tabId,
       header,
       tab
     }
@@ -14,13 +16,37 @@ module TabPanel = {
 }
 
 [@react.component]
-let make = (~tabs) => {
+let make = (~tabs, ~onChange=None, ~tabId=None) => {
   switch(tabs) {
     | [] => <div>
       {React.string("No Tabs")}
     </div>
     | tabs => {
       let (selected, setSelected) = React.useState(_ => 0);
+      React.useEffect1(_ => {
+        switch (tabId) {
+          | Some(tabId) => {
+            List.iteri((idx, tab) => {
+              if (tab.TabPanel.tabId == tabId) {
+                setSelected(_ => idx);
+              } else {
+                ()
+              }
+            },tabs);
+          }
+          | None => ()
+        }
+        None
+      }, [|tabId|]);
+      let onSelected(index) {
+        setSelected(_ => index);
+        switch (onChange, List.nth_opt(tabs, index)) {
+          | (Some(onChange), Some(tab)) => {
+            onChange(tab.TabPanel.tabId)
+          }
+          | _ => ()
+        }
+      }
       // Build an array of the tabs.
       let renderHeader(index, tab) = {
         if (index == selected) {
@@ -31,7 +57,7 @@ let make = (~tabs) => {
             }
           </li>
         } else {
-          <li key={string_of_int(index)} onClick={_ => setSelected(_ => index)}>
+          <li key={string_of_int(index)} onClick={_ => onSelected(index)}>
             {
               tab.TabPanel.header
             }
