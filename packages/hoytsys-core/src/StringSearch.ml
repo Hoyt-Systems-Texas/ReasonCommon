@@ -98,11 +98,11 @@ module Make_string_search(S: String_search_type) = struct
       middle;
     }
 
-  let next_high idx start end_ =
+  let next_high idx _start end_ =
     let offset = end_ - idx in
     (offset / 2) + idx + offset mod 2
 
-  let next_low idx start end_ =
+  let next_low idx start _end =
     let offset = idx - start in
     (offset / 2) + start
 
